@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { CTA } from '@/components/CTA'
@@ -22,6 +23,78 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   }
 }
 
+function InlineMarkdown({ text }: { text: string }) {
+  const linkedSegments = text.split(/(\[[^\]]+\]\([^)]+\))/g)
+
+  return (
+    <>
+      {linkedSegments.map((segment, segmentIndex) => {
+        const link = segment.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
+        if (link) {
+          return <Link key={segmentIndex} className="font-semibold text-sky-700 underline" href={link[2]}>{link[1]}</Link>
+        }
+
+        const boldParts = segment.split(/(\*\*[^*]+\*\*)/g)
+        return boldParts.map((part, index) => {
+          const key = `${segmentIndex}-${index}`
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={key}>{part.slice(2, -2)}</strong>
+          }
+          return <span key={key}>{part}</span>
+        })
+      })}
+    </>
+  )
+}
+
+function RenderMarkdown({ source }: { source: string }) {
+  const blocks = source.trim().split(/\n\s*\n/)
+
+  return (
+    <div className="prose mt-10 max-w-none">
+      {blocks.map((block, index) => {
+        const trimmed = block.trim()
+        if (!trimmed) return null
+
+        if (trimmed.startsWith('## ')) {
+          return <h2 key={index}>{trimmed.replace(/^##\s+/, '')}</h2>
+        }
+
+        if (/^\d+\.\s/m.test(trimmed)) {
+          return (
+            <ol key={index} className="list-decimal space-y-2 pl-6">
+              {trimmed.split('\n').map((item) => (
+                <li key={item}><InlineMarkdown text={item.replace(/^\d+\.\s+/, '')} /></li>
+              ))}
+            </ol>
+          )
+        }
+
+        if (trimmed.startsWith('- ')) {
+          return (
+            <ul key={index}>
+              {trimmed.split('\n').map((item) => (
+                <li key={item}><InlineMarkdown text={item.replace(/^-\s+/, '')} /></li>
+              ))}
+            </ul>
+          )
+        }
+
+        const linkOnly = trimmed.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
+        if (linkOnly) {
+          return (
+            <p key={index}>
+              <Link className="font-semibold text-sky-700 underline" href={linkOnly[2]}>{linkOnly[1]}</Link>
+            </p>
+          )
+        }
+
+        return <p key={index}><InlineMarkdown text={trimmed} /></p>
+      })}
+    </div>
+  )
+}
+
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = getBlogPost(params.slug)
   if (!post) notFound()
@@ -43,16 +116,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">{post.content_silo}</p>
         <h1 className="mt-4 text-4xl font-black text-ink md:text-5xl">{post.title}</h1>
         <p className="mt-5 text-lg leading-8 text-slate-600">{post.meta_description}</p>
-        <div className="prose mt-10 max-w-none">
-          <p><strong>Primary keyword:</strong> {post.primary_keyword}</p>
-          <p>This MDX scaffold is ready for a full article draft. Expand it to match the target word count in the content calendar, add real chart screenshots, and include the planned silo links.</p>
-          <h2>Trading Context</h2>
-          <p>Explain how this topic fits into reversal, entry, exit, and TradingView signal workflows.</p>
-          <h2>Signal Workflow</h2>
-          <p>Show practical examples using screenshots once available. Use next/image for each optimized visual.</p>
-          <h2>Risk Management</h2>
-          <p>Remind readers that indicators support decision-making but do not guarantee profitable trades.</p>
-        </div>
+        <RenderMarkdown source={post.body} />
         <div className="mt-12"><CTA variant={post.cta === '/pricing' ? 'pricing' : 'trial'} /></div>
       </article>
     </main>

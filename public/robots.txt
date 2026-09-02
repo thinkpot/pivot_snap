@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /staging/
+Disallow: /preview/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /private/
+
+Sitemap: https://pivotsnap.tech/sitemap.xml

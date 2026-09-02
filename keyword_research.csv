@@ -1,0 +1,123 @@
+keyword,search volume,KD,CPC,search intent (informational/transactional/navigational),notes
+breaker block,673000,13,4.5,informational,"PRIORITY_TOP_20 volume/KD=51769.23; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com ranks #9; page: breaker blocks vs order blocks"
+nasdaq futures,301000,62,2.61,informational,"PRIORITY_TOP_20 volume/KD=4854.84; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. tradingview.com ranks #3; large but broad/not primary for indicator launch"
+fx replay,22200,20,0.43,informational,"PRIORITY_TOP_20 volume/KD=1110.00; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com ranks #9; backtesting-platform content angle"
+forex replay,22200,22,0.43,transactional,"PRIORITY_TOP_20 volume/KD=1009.09; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com ranks #12; backtesting-platform content angle"
+stochastic momentum index,22200,30,4.43,informational,"PRIORITY_TOP_20 volume/KD=740.00; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #5; indicator education gap"
+multi timeframe,14800,27,5.67,informational,"PRIORITY_TOP_20 volume/KD=548.15; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com ranks #14; indicator feature/content angle"
+displacement forex,6600,13,0,transactional,"PRIORITY_TOP_20 volume/KD=507.69; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com ranks #10; institutional sweep topic"
+trading ai,18100,37,12.62,transactional,"PRIORITY_TOP_20 volume/KD=489.19; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #4; product-positioning gap"
+supply and demand charting,14800,31,8.6,informational,"PRIORITY_TOP_20 volume/KD=477.42; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com/trendspider rank; strong education topic"
+fair value gap,9900,35,5.56,informational,"PRIORITY_TOP_20 volume/KD=282.86; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #4; high-value education gap"
+cup handle pattern,9900,46,1.6,informational,"PRIORITY_TOP_20 volume/KD=215.22; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com ranks #10"
+trading bot,3600,25,7.97,transactional,"PRIORITY_TOP_20 volume/KD=144.00; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com ranks #15; automation adjacent"
+smt divergence,2400,17,0,informational,"PRIORITY_TOP_20 volume/KD=141.18; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com ranks #13; indicator-library gap"
+supply demand trading,1600,18,5.82,informational,"PRIORITY_TOP_20 volume/KD=88.89; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #2"
+supply and demand trading,1600,20,5.82,informational,"PRIORITY_TOP_20 volume/KD=80.00; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #3"
+wyckoff accumulation,1900,30,0.37,informational,"PRIORITY_TOP_20 volume/KD=63.33; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com ranks #14; reversal/accumulation blog gap"
+TradingView indicator,1300,23,4.3,navigational,PRIORITY_TOP_20 volume/KD=56.52; Seed keyword; Ubersuggest keyword overview; US/en.
+w pattern trading,720,20,0.78,transactional,"PRIORITY_TOP_20 volume/KD=36.00; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #3"
+rsi divergence,1000,36,6.16,informational,"PRIORITY_TOP_20 volume/KD=27.78; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo.com ranks #17; reversal confirmation keyword"
+hanging man candlestick,1000,36,1.29,transactional,"PRIORITY_TOP_20 volume/KD=27.78; Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #2; reversal candlestick gap"
+trendspider review,720,28,8.28,informational,"Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #2; competitor review/comparison page"
+ttm squeeze,590,25,6.37,informational,"Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #2"
+best tradingview indicator,590,26,3.14,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+anchored vwap,590,29,0.73,transactional,"Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #2"
+engulfing candlestick,590,34,1.04,transactional,"Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #3"
+wyckoff distribution pattern,480,33,0.5,informational,"Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #3"
+bollinger band strategy,480,41,2.37,informational,"Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. trendspider.com ranks #2"
+best trading indicator,260,22,3.26,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+swing trading indicator,140,17,2.265,informational,Seed keyword; Ubersuggest keyword overview; US/en.
+tradingview indicator liquidity zones,50,5,0,navigational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+reversal indicator,50,14,0,informational,Seed keyword; Ubersuggest keyword overview; US/en.
+buy sell signal indicator,40,15,5.02,transactional,Seed keyword; Ubersuggest keyword overview; US/en.
+best reversal indicator,40,18,5.87,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best tradingview indicator for options,40,20,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+trend reversal indicator,40,21,5.4,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best tradingview indicator for scalping,40,25,16.99,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best tradingview indicator for crypto,40,27,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best tradingview indicator reddit,40,30,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+reversal trading strategy,40,39,4.84,informational,Seed keyword; Ubersuggest keyword overview; US/en.
+best trading indicator on tradingview,30,15,3.415,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+best trend reversal indicator,30,19,5.43,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+most accurate tradingview indicator,30,23,4.2,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best reversal indicator tradingview,30,25,6.04,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+tradingview indicator not showing,30,25,0,navigational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best tradingview indicator for swing trading,30,28,3.94,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best tradingview indicator buy sell,30,31,3.66,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+tradingview indicator best,30,31,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+forex buy sell signal indicator,30,32,4.48,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best free tradingview indicator,30,34,1.82,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best trading indicator tradingview,30,34,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+tradingview indicator list,30,38,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+tradingview indicator reaction entry,20,5,0,navigational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best trading indicator for crypto,20,10,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+what is the best trading indicator,20,15,3.37,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+tradingview indicator template,20,17,0,navigational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+tradingview indicator free,20,25,4.42,navigational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+accurate buy sell signal indicator mt5,10,5,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+auto buy sell signal indicator mt4 free download,10,5,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best trading indicator buy and sell,10,5,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+best trading indicator ever,10,5,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+best trading indicator strategy,10,5,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+buy sell signal indicator mt5,10,5,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+crypto reversal trading strategy,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+doji reversal indicator mt4,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+forex trend reversal indicator mt4,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+how to automate tradingview indicator,10,5,0,navigational,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+how to create your own tradingview indicator,10,5,0,navigational,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+most accurate swing trading indicator,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+most effective tradingview buy sell signal indicator,10,5,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+multi timeframe rsi reversal indicator,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+non repaint reversal indicator mt5,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+pivot point reversal indicator,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+pz swing trading indicator,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+reversal trading strategy forex,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+reversal trading strategy indicator,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+rsi reversal indicator mt4,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+smart money concepts trading indicator,10,5,0,informational,"Competitor gap keyword; competitor URLs were placeholders, so assumed luxalgo.com, trendspider.com, tradingview.com; not present in seed/related list. luxalgo top page: Smart Money Concepts indicator library"
+trend reversal trading strategy,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+volume reversal indicator mt4,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+what is a reversal trading strategy,10,5,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+what is trading indicator,10,5,0,informational,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+what is trend reversal pattern,10,5,0,informational,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+most accurate trend reversal indicator,10,6,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best reversal trading strategy,10,7,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+swing trading indicator strategy,10,8,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+tradingview entry exit indicator,10,8,0,navigational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+buy sell signal indicator tradingview,10,10,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+entry exit indicator,10,13,0,informational,Seed keyword; Ubersuggest keyword overview; US/en.
+momentum reversal indicator,10,13,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+price reversal indicator,10,13,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+trade reversal indicator,10,13,0,informational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+trend reversal trading,10,13,0,informational,Seed keyword; Ubersuggest keyword overview; US/en.
+best buy sell signal indicator tradingview,10,14,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+what is trend reversal in stock market,10,14,0,informational,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+swing trading indicator tradingview,10,15,3.625,navigational,Related keyword / long-tail variation from Ubersuggest match_keywords.
+accurate buy sell signal indicator tradingview,10,33,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best forex buy sell signal indicator,10,36,0,transactional,Related keyword / long-tail variation from Ubersuggest match_keywords.
+best trading indicator for support and resistance,0,4,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+best trading indicator for xauusd,0,4,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+best trading indicator free,0,4,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+best trading indicator script,0,4,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+how to use luxalgo reversal indicator,0,4,0,navigational,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+what is best trading indicator,0,4,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+what is the best trading indicator on tradingview,0,4,0,transactional,Top-of-funnel question/comparison/blog candidate from Ubersuggest question-style keyword ideas.
+123 pattern reversal trading strategy setup and backtest,,,,informational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. quantifiedstrategies.com; est visits 2; backlinks 151
+algopro review tradingview indicator suite worth it,,,,transactional,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. pineify.app; est visits 3
+auto swing trading indicator,,,,informational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. tradingview.com content idea
+best reversal indicator mt4 mt5 signals the key points,,,,transactional,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. fxssi.com; est visits 5; backlinks 76
+best tradingview buy sell signal indicator plugin,,,,transactional,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. techbullion.com; backlinks 1312
+forex trend reversal indicator how to spot and trade,,,,informational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. accio.com; est visits 1; backlinks 15
+how to build a tradingview indicator pine script,,,,navigational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. entexis.in; est visits 2
+how to fix tradingview indicator errors,,,,navigational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. friendofthetrend.com; est visits 2
+how to use an ai tradingview indicator to enhance technical analysis,,,,navigational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. lunefi.com; est visits 4; backlinks 1
+rob booker reversal indicator: spotting potential market reversals,,,,informational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. luxalgo.com; est visits 8; backlinks 1
+rygel trend reversal indicator,,,,informational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. tradingview.com; est visits 3
+secret swing trading indicator to avoid ranges,,,,informational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. youtube.com; backlinks 5
+simplealgo review tradingview indicator pricing,,,,transactional,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. coinspot.io; est visits 16
+supreme buy sell signal indicator,,,,transactional,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. tradingview.com; est visits 29
+the vix reversal trading strategy,,,,informational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. whselfinvest.com; est visits 11; backlinks 6
+trend reversal trading strategy guide,,,,informational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. tradingwithrayner.com; total shares 227; backlinks 58
+ultimate guide to trend reversal indicator,,,,informational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. tradingwithrayner.com; est visits 1; backlinks 7
+what is reversal trading strategy and market impact,,,,informational,Content Ideas report topic/page; Ubersuggest provides page visits/backlinks rather than keyword volume/KD. jmfinancialservices.in; est visits 7; backlinks 2

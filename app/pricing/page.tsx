@@ -1,6 +1,7 @@
-import Link from 'next/link'
 import type { Metadata } from 'next'
+import { PricingViewEvent } from '@/components/AnalyticsEvents'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
+import { CheckoutButton } from '@/components/CheckoutButton'
 import { JsonLd } from '@/components/JsonLd'
 import { getArchitecturePage, generateSeoMetadata } from '@/lib/seo'
 import { absoluteUrl } from '@/lib/site'
@@ -16,6 +17,7 @@ export default function PricingPage() {
   const page = getArchitecturePage('/pricing')!
   return (
     <main>
+      <PricingViewEvent />
       <JsonLd data={{
         '@context': 'https://schema.org',
         '@type': 'Product',
@@ -34,7 +36,7 @@ export default function PricingPage() {
               <h2 className="text-2xl font-bold text-ink">{plan.name}</h2>
               <p className="mt-4 text-4xl font-black">{plan.price}</p>
               <ul className="mt-6 space-y-3 text-slate-600">{plan.features.map((feature) => <li key={feature}>✓ {feature}</li>)}</ul>
-              <Link href="/free-trial" className="mt-8 inline-flex rounded-full bg-ink px-6 py-3 font-semibold text-white">Start free trial</Link>
+              <CheckoutButton label="Start checkout" planName={plan.name} />
             </article>
           ))}
         </div>

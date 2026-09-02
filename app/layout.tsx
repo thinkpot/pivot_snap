@@ -11,6 +11,9 @@ export const metadata: Metadata = {
     template: '%s | PivotSnap',
   },
   description: siteConfig.description,
+  verification: {
+    google: 'DoeUfCiKhCWg05mx2Q4xrDq38_IkJmbeP9_GReLQzY0',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

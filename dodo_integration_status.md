@@ -89,30 +89,25 @@ Behavior:
 - Handles successful payment-style events.
 - Extracts buyer email from common Dodo webhook payload locations.
 - Logs purchase data to `/tmp/pivotsnap-dodo-purchases.jsonl` at runtime.
-- Sends a delivery payload to `EMAIL_CAPTURE_WEBHOOK_URL` so a transactional email provider/automation can deliver the Pine Script code or secure delivery link.
+- Sends the delivery email through Resend using `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and `SUPPORT_EMAIL`.
 
 Important: `/tmp` is ephemeral on Vercel/serverless. Replace with durable storage before relying on logs for support/refunds. Recommended options: Supabase, Neon, Airtable, a CRM, or a proper transactional email platform event log.
 
 ## Email Provider Status
 
-No specific transactional email provider has been confirmed yet.
+Transactional delivery is now wired to **Resend**.
 
-Current implementation uses the existing generic webhook handoff:
+The Dodo webhook route sends the post-purchase email directly via Resend after a verified successful payment event.
+
+Required Resend variables:
 
 ```env
-EMAIL_CAPTURE_WEBHOOK_URL=
+RESEND_API_KEY=replace_me_resend_api_key
+RESEND_FROM_EMAIL=code@pivotsnap.tech
+SUPPORT_EMAIL=support@pivotsnap.tech
 ```
 
-You still need to confirm the provider/automation endpoint, for example:
-
-- Resend
-- SendGrid
-- Postmark
-- Mailgun
-- ConvertKit
-- Zapier/Make webhook that sends the email
-
-Once confirmed, replace or point `EMAIL_CAPTURE_WEBHOOK_URL` to that provider/automation.
+You must verify `pivotsnap.tech` in the Resend dashboard before using `code@pivotsnap.tech` as the sender.
 
 ## Environment Variables Added
 
@@ -177,8 +172,11 @@ DODO_PAYMENTS_WEBHOOK_KEY=your_real_dodo_webhook_key
 DODO_PAYMENTS_RETURN_URL=https://pivotsnap.tech/free-trial?checkout=success
 DODO_PAYMENTS_ENVIRONMENT=live_mode
 NEXT_PUBLIC_DODO_PAYMENTS_PRODUCT_ID=your_dodo_product_id
-EMAIL_CAPTURE_WEBHOOK_URL=your_confirmed_transactional_email_endpoint
-PINE_SCRIPT_DELIVERY_URL=your_secure_delivery_url_or_page
+RESEND_API_KEY=your_resend_api_key
+RESEND_FROM_EMAIL=code@pivotsnap.tech
+SUPPORT_EMAIL=support@pivotsnap.tech
+PINE_SCRIPT_DELIVERY_URL=your_private_delivery_url
+PINE_SCRIPT_CODE=optional_actual_pine_script_code
 ```
 
 Also needed:
@@ -191,7 +189,7 @@ https://pivotsnap.tech/api/webhooks/dodo
 ```
 
 3. Confirm which Dodo event name(s) are emitted for successful one-time payments in your dashboard/test mode and adjust `isSuccessfulPaymentEvent()` if needed.
-4. Confirm transactional email provider: Resend, SendGrid, Postmark, Mailgun, Zapier/Make, etc.
+4. Verify `pivotsnap.tech` in Resend and confirm `code@pivotsnap.tech` can send transactional email.
 5. Replace `/tmp` logging with durable database/log storage.
 6. Consider removing legacy Stripe routes after Dodo is fully verified.
 

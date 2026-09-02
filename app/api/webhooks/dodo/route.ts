@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { NextResponse } from 'next/server'
+import { Resend } from 'resend'
 import { Webhook } from 'standardwebhooks'
 
 export const runtime = 'nodejs'
@@ -68,28 +69,84 @@ async function logPurchase(record: Record<string, unknown>) {
   await fs.appendFile(runtimeLogPath, line, 'utf-8')
 }
 
-async function sendDeliveryEmail(payload: { email: string; eventId: string; purchasedAt: string }) {
-  const webhookUrl = process.env.EMAIL_CAPTURE_WEBHOOK_URL
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
+function buildDeliveryContent() {
+  const pineScriptCode = process.env.PINE_SCRIPT_CODE
   const deliveryUrl = process.env.PINE_SCRIPT_DELIVERY_URL || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://pivotsnap.tech'}/tradingview-script`
 
-  if (!webhookUrl) {
-    console.warn('EMAIL_CAPTURE_WEBHOOK_URL is not configured; Dodo purchase delivery email was not sent automatically.', payload)
+  if (pineScriptCode && pineScriptCode !== 'replace_me_with_actual_pine_script_or_use_delivery_url') {
+    return {
+      text: `Here is your PivotSnap Pine Script code:\n\n${pineScriptCode}`,
+      html: `<p>Here is your PivotSnap Pine Script code:</p><pre style="white-space:pre-wrap;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.6;">${escapeHtml(pineScriptCode)}</pre>`,
+    }
+  }
+
+  return {
+    text: `Your PivotSnap Pine Script code/access instructions are available here: ${deliveryUrl}`,
+    html: `<p>Your PivotSnap Pine Script code or secure access instructions are available here:</p><p><a href="${escapeHtml(deliveryUrl)}">${escapeHtml(deliveryUrl)}</a></p>`,
+  }
+}
+
+async function sendDeliveryEmail(payload: { email: string; eventId: string; purchasedAt: string }) {
+  const resendApiKey = process.env.RESEND_API_KEY
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'code@pivotsnap.tech'
+  const supportEmail = process.env.SUPPORT_EMAIL || 'support@pivotsnap.tech'
+
+  if (!resendApiKey || resendApiKey === 'replace_me_resend_api_key') {
+    console.warn('RESEND_API_KEY is not configured; Dodo purchase delivery email was not sent automatically.', payload)
     return
   }
 
-  await fetch(webhookUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      event_type: 'pivotsnap_dodo_purchase_completed',
-      provider: 'dodo_payments',
-      to: payload.email,
-      subject: 'Your PivotSnap TradingView Indicator access',
-      message: `Thanks for purchasing PivotSnap. Access your Pine Script code or setup instructions here: ${deliveryUrl}`,
-      delivery_url: deliveryUrl,
-      dodo_event_id: payload.eventId,
-      purchased_at: payload.purchasedAt,
-    }),
+  const resend = new Resend(resendApiKey)
+  const deliveryContent = buildDeliveryContent()
+  const subject = 'Your PivotSnap TradingView Indicator code'
+
+  await resend.emails.send({
+    from: `PivotSnap <${fromEmail}>`,
+    to: payload.email,
+    subject,
+    text: [
+      'Thank you for purchasing PivotSnap.',
+      '',
+      'PivotSnap is a TradingView reversal, entry, exit, and buy/sell signal indicator for technical-analysis workflows.',
+      '',
+      deliveryContent.text,
+      '',
+      'Setup instructions:',
+      '1. Open TradingView and go to Pine Editor.',
+      '2. Paste the PivotSnap Pine Script code or follow the secure access link instructions.',
+      '3. Save the script and add it to your chart.',
+      '',
+      `If you have any issues, contact support at ${supportEmail}.`,
+      '',
+      `Purchase reference: ${payload.eventId}`,
+      `Purchase time: ${payload.purchasedAt}`,
+    ].join('\n'),
+    html: `
+      <div style="font-family:Inter,Arial,sans-serif;line-height:1.6;color:#0f172a;max-width:640px;margin:0 auto;">
+        <h1 style="font-size:24px;margin-bottom:12px;">Thank you for purchasing PivotSnap</h1>
+        <p>PivotSnap is a TradingView reversal, entry, exit, and buy/sell signal indicator for technical-analysis workflows.</p>
+        ${deliveryContent.html}
+        <h2 style="font-size:18px;margin-top:24px;">Setup instructions</h2>
+        <ol>
+          <li>Open TradingView and go to Pine Editor.</li>
+          <li>Paste the PivotSnap Pine Script code or follow the secure access link instructions.</li>
+          <li>Save the script and add it to your chart.</li>
+        </ol>
+        <p>If you have any issues, contact support at <a href="mailto:${escapeHtml(supportEmail)}">${escapeHtml(supportEmail)}</a>.</p>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;" />
+        <p style="font-size:12px;color:#64748b;">Purchase reference: ${escapeHtml(payload.eventId)}<br />Purchase time: ${escapeHtml(payload.purchasedAt)}</p>
+        <p style="font-size:12px;color:#64748b;">Trading involves risk. PivotSnap is software and educational content only, not financial advice.</p>
+      </div>
+    `,
   })
 }
 

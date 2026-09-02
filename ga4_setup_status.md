@@ -19,7 +19,7 @@ G-W2SWNVKYET
 ## Files Updated
 
 - `app/layout.tsx`
-- `app/free-trial/page.tsx`
+- `app/demo/page.tsx`
 - `app/pricing/page.tsx`
 
 ## Base GA4 Tag
@@ -49,20 +49,20 @@ lib/gtag.ts
 
 | Event | Where it fires | Implementation |
 |---|---|---|
-| `email_signup` | Successful `/free-trial` form submission | `components/FreeTrialForm.tsx` submits to `/api/subscribe`, then fires GA4 event on success. |
+| `email_signup` | Successful `/demo` form submission | `components/FreeTrialForm.tsx` submits to `/api/subscribe`, then fires GA4 event on success. |
 | `pricing_view` | `/pricing` page load | `components/AnalyticsEvents.tsx` via `PricingViewEvent`. |
 | `checkout_started` | When user clicks a pricing checkout button | `components/CheckoutButton.tsx` fires before calling `/api/checkout`. |
-| `purchase_complete` | When user lands on `/free-trial?checkout=success` after Stripe checkout | `components/AnalyticsEvents.tsx` via `PurchaseCompleteEvent`. |
+| `purchase_complete` | When user lands on `/demo?checkout=success` after Stripe checkout | `components/AnalyticsEvents.tsx` via `PurchaseCompleteEvent`. |
 
 ## Implementation Notes
 
-- The `/free-trial` form is now a client component so it can submit asynchronously and fire `email_signup` only after the email capture API succeeds.
+- The `/demo` form is now a client component so it can submit asynchronously and fire `email_signup` only after the email capture API succeeds.
 - The `/pricing` page uses a client event component to fire `pricing_view` once on page load.
 - Pricing plan buttons now use `CheckoutButton`, which fires `checkout_started` and then calls `/api/checkout`.
 - `purchase_complete` currently fires on the Stripe success redirect URL:
 
 ```text
-/free-trial?checkout=success
+/demo?checkout=success
 ```
 
 For stricter payment-confirmed analytics, add a Stripe webhook and GA4 Measurement Protocol API secret later. The current implementation matches the existing checkout flow and does not require extra environment variables beyond the existing Stripe keys.
@@ -98,7 +98,7 @@ After Vercel finishes deploying, verify:
 
 1. Visit `https://pivotsnap.tech` and confirm GA4 Realtime receives a page view.
 2. Visit `/pricing` and confirm `pricing_view` appears in GA4 DebugView or Realtime events.
-3. Submit the `/free-trial` email form and confirm `email_signup` appears.
+3. Submit the `/demo` email form and confirm `email_signup` appears.
 4. Click a pricing checkout button and confirm `checkout_started` appears.
 5. Complete a Stripe test checkout and confirm `purchase_complete` appears after the success redirect.
 

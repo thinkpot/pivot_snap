@@ -3,16 +3,16 @@
 ## Completed
 
 - Scaffolded a Next.js 14 App Router project targeting Vercel.
-- Added `/app` route structure for `/`, `/how-it-works`, `/pricing`, `/free-trial`, `/tradingview-script`, `/faq`, `/blog/[slug]`, `/compare/[slug]`, and `/legal/[slug]`.
+- Added `/app` route structure for `/`, `/how-it-works`, `/pricing`, `/demo`, `/tradingview-script`, `/faq`, `/blog/[slug]`, `/compare/[slug]`, and `/legal/[slug]`.
 - Generated one MDX scaffold per scheduled post in `content_calendar.csv` under `/content/blog/*.mdx`.
 - Added required MDX frontmatter fields: `title`, `meta_description`, `primary_keyword`, and `publish_date`.
 - Added `/lib/seo.ts` that reads `site_architecture.csv` and centralizes metadata for architecture pages.
 - Added custom `/app/sitemap.ts` to generate `sitemap.xml` from `site_architecture.csv`, MDX blog posts, legal pages, and comparison pages.
 - Added `/app/robots.ts` with crawler rules for public pages and blocked staging/admin/private/API routes.
-- Built priority pages first with H1/meta content from `site_architecture.csv`: homepage, how-it-works, pricing, and free-trial.
+- Built priority pages first with H1/meta content from `site_architecture.csv`: homepage, how-it-works, pricing, and demo.
 - Added placeholder chart/image slots using `next/image` through `components/PlaceholderImage.tsx`.
 - Added four legal template pages: risk disclaimer, terms, privacy, and refund policy.
-- Added API route scaffolds for Stripe Checkout test-mode one-time payments and email capture.
+- Added API route scaffolds for Stripe Checkout test-mode one-time payments and demo email capture.
 - Added shared layout, header, footer, breadcrumbs, JSON-LD helper, CTA component, Tailwind setup, TypeScript config, and environment variable example.
 
 ## Needs Your Input

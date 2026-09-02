@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     mode: 'payment',
     customer_email: parsed.data.email,
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${origin}/free-trial?checkout=success`,
+    success_url: `${origin}/demo?checkout=success`,
     cancel_url: `${origin}/pricing?checkout=cancelled`,
     metadata: {
       product: 'PivotSnap TradingView Indicator',

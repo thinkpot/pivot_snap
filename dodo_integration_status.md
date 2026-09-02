@@ -116,7 +116,7 @@ You must verify `pivotsnap.tech` in the Resend dashboard before using `code@pivo
 ```env
 DODO_PAYMENTS_API_KEY=replace_me_dodo_payments_api_key
 DODO_PAYMENTS_WEBHOOK_KEY=replace_me_dodo_webhook_key
-DODO_PAYMENTS_RETURN_URL=https://pivotsnap.tech/free-trial?checkout=success
+DODO_PAYMENTS_RETURN_URL=https://pivotsnap.tech/demo?checkout=success
 DODO_PAYMENTS_ENVIRONMENT=test_mode
 NEXT_PUBLIC_DODO_PAYMENTS_PRODUCT_ID=prod_replace_me
 ```
@@ -169,7 +169,7 @@ You still need to add real values in Vercel/project environment variables:
 ```env
 DODO_PAYMENTS_API_KEY=your_rotated_real_key
 DODO_PAYMENTS_WEBHOOK_KEY=your_real_dodo_webhook_key
-DODO_PAYMENTS_RETURN_URL=https://pivotsnap.tech/free-trial?checkout=success
+DODO_PAYMENTS_RETURN_URL=https://pivotsnap.tech/demo?checkout=success
 DODO_PAYMENTS_ENVIRONMENT=live_mode
 NEXT_PUBLIC_DODO_PAYMENTS_PRODUCT_ID=your_dodo_product_id
 RESEND_API_KEY=your_resend_api_key

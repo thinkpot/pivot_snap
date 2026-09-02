@@ -13,6 +13,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/free-trial',
+        destination: '/demo',
+        permanent: true,
+      },
+      {
         source: '/blog/best-tradingview-indicator-for-crypto-reversal-signals',
         destination: '/blog/crypto-reversal-trading-strategy-for-tradingview-signals',
         permanent: true,

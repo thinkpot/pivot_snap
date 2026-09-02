@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
 export function CTA({ variant = 'trial' }: { variant?: 'trial' | 'pricing' }) {
-  const href = variant === 'pricing' ? '/pricing' : '/free-trial'
-  const label = variant === 'pricing' ? 'Buy PivotSnap for $10' : 'Get access details'
+  const href = variant === 'pricing' ? '/pricing' : '/demo'
+  const label = variant === 'pricing' ? 'Buy PivotSnap for $10' : 'Watch the demo'
   return (
     <div className="rounded-3xl bg-ink p-8 text-white shadow-xl">
       <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">Next step</p>

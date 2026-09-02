@@ -28,7 +28,7 @@ export function PurchaseCompleteEvent() {
     if (searchParams.get('checkout') !== 'success') return
     fired.current = true
     trackEvent('purchase_complete', {
-      page_path: '/free-trial',
+      page_path: '/demo',
       checkout_status: 'success',
     })
   }, [searchParams])

@@ -168,7 +168,7 @@ www.pivotsnap.tech
 https://pivotsnap.tech/
 https://pivotsnap.tech/how-it-works
 https://pivotsnap.tech/pricing
-https://pivotsnap.tech/free-trial
+https://pivotsnap.tech/demo
 https://pivotsnap.tech/faq
 https://pivotsnap.tech/sitemap.xml
 https://pivotsnap.tech/robots.txt

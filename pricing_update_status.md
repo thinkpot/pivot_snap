@@ -88,13 +88,13 @@ Current draft position:
 
 ### Site-Wide Copy Updates
 
-Updated active page/component references away from old monthly/free-trial wording where relevant:
+Updated active page/component references away from old monthly/demo wording where relevant:
 
 - Homepage CTA now says `Buy for $10`.
 - Header CTA now says `Buy for $10`.
-- Footer `/free-trial` label now says `Get access`.
+- Footer `/demo` label now says `Watch demo`.
 - FAQ now says PivotSnap is a `$10 one-time purchase` with email delivery.
-- `site_architecture.csv` pricing/free-trial metadata was updated for the new $10 one-time offer.
+- `site_architecture.csv` pricing/demo metadata was updated for the new $10 one-time offer.
 - `.env.example` now includes one-time payment/webhook variables.
 
 ### GA4 Event Context

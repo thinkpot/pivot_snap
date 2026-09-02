@@ -15,7 +15,7 @@ export default function HowItWorksPage() {
         <div>
           <h1 className="text-4xl font-black text-ink md:text-5xl">{page.h1}</h1>
           <p className="mt-5 text-lg leading-8 text-slate-600">{page.description}</p>
-          <Link href="/free-trial" className="mt-8 inline-flex rounded-full bg-ink px-6 py-3 font-semibold text-white">Try the indicator free</Link>
+          <Link href="/demo" className="mt-8 inline-flex rounded-full bg-ink px-6 py-3 font-semibold text-white">Watch the demo</Link>
         </div>
         <PlaceholderImage label="Signal logic walkthrough" alt="entry exit indicator signal logic chart placeholder" />
       </section>

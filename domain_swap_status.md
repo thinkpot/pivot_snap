@@ -73,7 +73,7 @@ No matches remain after the swap.
 
 ## Manual Review / Confidence Notes
 
-- The only remaining `example.com` occurrence is the generic email input placeholder `you@example.com` on `/free-trial`. I intentionally kept that because it is a standard placeholder email address, not a site URL, canonical, sitemap, robots, JSON-LD, or metadata reference.
+- The only remaining `example.com` occurrence is the generic email input placeholder `you@example.com` on `/demo`. I intentionally kept that because it is a standard placeholder email address, not a site URL, canonical, sitemap, robots, JSON-LD, or metadata reference.
 - `brand_name_research.csv` is historical research/reference data. The previous old-brand candidate rows were normalized during the brand rename/domain cleanup so old brand strings do not remain. If you want that CSV to preserve historical naming research exactly, review it manually; it is not used by the Next.js app runtime.
 - The parent folder path still contains `/GammaOne/` because that is outside the codebase content and moving the parent directory was not requested.
 

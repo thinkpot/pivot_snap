@@ -3,7 +3,7 @@ import Link from 'next/link'
 const nav = [
   ['How it works', '/how-it-works'],
   ['Pricing', '/pricing'],
-  ['Get access', '/free-trial'],
+  ['Watch demo', '/demo'],
   ['TradingView script', '/tradingview-script'],
   ['Blog', '/blog'],
 ]

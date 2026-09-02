@@ -55,7 +55,7 @@ Searched source files excluding `node_modules`, `.next`, and `.git` for:
 
 No forbidden production URL/canonical/sitemap/robots references remain.
 
-Note: `you@example.com` remains intentionally as a generic email input placeholder on `/free-trial`; it is not a canonical, sitemap, robots, metadata, JSON-LD, or deployment URL.
+Note: `you@example.com` remains intentionally as a generic email input placeholder on `/demo`; it is not a canonical, sitemap, robots, metadata, JSON-LD, or deployment URL.
 
 ## Production Build Verification
 

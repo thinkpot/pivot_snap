@@ -68,7 +68,9 @@ Project → Settings → Environment Variables
 |---|---:|---|---|
 | `NEXT_PUBLIC_SITE_URL` | Yes | `https://pivotsnap.tech` | Used for canonical URLs, sitemap, robots, Stripe return URLs, and metadata. |
 | `STRIPE_SECRET_KEY` | Before checkout launch | `sk_test_...` or `sk_live_...` | Keep secret. Use test key during testing and live key only when ready. |
-| `STRIPE_PRICE_ID` | Before checkout launch | `price_...` | Stripe subscription price ID used by `/api/checkout`. |
+| `STRIPE_PRICE_ID` | Before checkout launch | `price_...` | Stripe one-time $10 Price ID used by `/api/checkout`. |
+| `STRIPE_WEBHOOK_SECRET` | Before webhook launch | `whsec_...` | Required for `/api/stripe-webhook` signature verification. |
+| `PINE_SCRIPT_DELIVERY_URL` | Before delivery launch | `https://pivotsnap.tech/tradingview-script` | Link sent to buyers after payment. |
 | `EMAIL_CAPTURE_WEBHOOK_URL` | Optional but recommended | Provider webhook URL | Used by `/api/subscribe`; leave blank only if you do not need forwarding yet. |
 
 Current `.env.example` already includes:
@@ -76,8 +78,10 @@ Current `.env.example` already includes:
 ```env
 NEXT_PUBLIC_SITE_URL=https://pivotsnap.tech
 STRIPE_SECRET_KEY=sk_test_replace_me
-STRIPE_PRICE_ID=price_replace_me
+STRIPE_PRICE_ID=price_replace_me_for_one_time_10_usd_product
+STRIPE_WEBHOOK_SECRET=whsec_replace_me
 EMAIL_CAPTURE_WEBHOOK_URL=
+PINE_SCRIPT_DELIVERY_URL=https://pivotsnap.tech/tradingview-script
 ```
 
 ## 4. GitHub Repository Status
@@ -195,10 +199,10 @@ Before public launch, you still need to provide or finalize:
 - GitHub repo creation and push.
 - Vercel environment variables.
 - DNS/custom domain connection for `pivotsnap.tech`.
-- Stripe test/live keys and final Stripe price IDs.
+- Stripe test/live keys and the final one-time $10 Stripe Price ID.
 - Email capture provider/webhook.
 - Real TradingView screenshots/GIFs.
-- Final pricing copy.
+- Stripe one-time $10 Price ID.
 - Full MDX article drafts.
 - Legal review of risk disclaimer, terms, privacy, and refund policy.
 

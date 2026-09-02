@@ -8,9 +8,12 @@ import { absoluteUrl } from '@/lib/site'
 
 export const metadata: Metadata = generateSeoMetadata('/pricing')
 
-const plans = [
-  { name: 'Starter', price: '$29/mo', features: ['TradingView access', 'Core reversal signals', 'Email support'] },
-  { name: 'Pro', price: '$59/mo', features: ['All Starter features', 'Advanced alerts', 'Priority support'] },
+const included = [
+  'PivotSnap TradingView Pine Script code delivered by email after purchase',
+  'One-time $10 USD payment — no monthly subscription and no recurring billing',
+  'Setup instructions for adding the indicator to your TradingView Pine Editor',
+  'Reversal, entry, exit, and buy/sell signal logic for technical-analysis workflows',
+  'Future setup notes and documentation updates while the product evolves',
 ]
 
 export default function PricingPage() {
@@ -22,24 +25,55 @@ export default function PricingPage() {
         '@context': 'https://schema.org',
         '@type': 'Product',
         name: 'PivotSnap TradingView Indicator',
-        description: page.description,
+        description: 'PivotSnap is a TradingView reversal, entry, exit, and buy/sell signal indicator delivered by email after a one-time $10 purchase.',
         brand: { '@type': 'Brand', name: 'PivotSnap' },
-        offers: { '@type': 'AggregateOffer', lowPrice: '29', highPrice: '59', priceCurrency: 'USD', url: absoluteUrl('/pricing') },
+        offers: {
+          '@type': 'Offer',
+          price: '10.00',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: absoluteUrl('/pricing'),
+        },
       }} />
       <Breadcrumbs items={[{ name: 'Pricing', href: '/pricing' }]} />
-      <section className="mx-auto max-w-6xl px-4 py-14 text-center">
-        <h1 className="text-4xl font-black text-ink md:text-5xl">{page.h1}</h1>
-        <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-600">{page.description}</p>
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {plans.map((plan) => (
-            <article key={plan.name} className="rounded-3xl border border-slate-200 p-8 text-left shadow-sm">
-              <h2 className="text-2xl font-bold text-ink">{plan.name}</h2>
-              <p className="mt-4 text-4xl font-black">{plan.price}</p>
-              <ul className="mt-6 space-y-3 text-slate-600">{plan.features.map((feature) => <li key={feature}>✓ {feature}</li>)}</ul>
-              <CheckoutButton label="Start checkout" planName={plan.name} />
-            </article>
-          ))}
+      <section className="mx-auto max-w-6xl px-4 py-14">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-accent">One-time purchase</p>
+          <h1 className="mt-4 text-4xl font-black text-ink md:text-5xl">{page.h1}</h1>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-600">
+            Buy PivotSnap for a single $10 USD payment. No subscription, no recurring billing — the TradingView Pine Script access details are delivered by email after purchase.
+          </p>
         </div>
+
+        <article className="mx-auto mt-10 max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 shadow-xl">
+          <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+            <div>
+              <h2 className="text-3xl font-black text-ink">PivotSnap</h2>
+              <p className="mt-2 text-slate-600">TradingView reversal and entry/exit indicator</p>
+            </div>
+            <div className="rounded-2xl bg-slate-50 px-6 py-4 text-center">
+              <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">One-time</p>
+              <p className="text-5xl font-black text-ink">$10</p>
+              <p className="text-sm text-slate-500">USD</p>
+            </div>
+          </div>
+
+          <div className="mt-8 border-t border-slate-200 pt-8">
+            <h3 className="text-xl font-bold text-ink">What is included</h3>
+            <ul className="mt-5 space-y-3 text-slate-700">
+              {included.map((feature) => <li key={feature}>✓ {feature}</li>)}
+            </ul>
+          </div>
+
+          <div className="mt-8 rounded-2xl bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+            PivotSnap is technical-analysis software only. It does not provide financial advice, execute trades, manage funds, or guarantee trading results.
+          </div>
+
+          <CheckoutButton label="Buy PivotSnap for $10" planName="PivotSnap one-time purchase" />
+          <p className="mt-4 text-sm text-slate-500">
+            After payment, check your email for delivery instructions and the Pine Script access link/code.
+          </p>
+        </article>
       </section>
     </main>
   )

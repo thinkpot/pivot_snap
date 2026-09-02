@@ -30,7 +30,7 @@
 - **Primary target keyword:** reversal indicator
 - **Search intent:** transactional
 - **Title tag:** `TradingView Reversal Indicator for Entries & Exits`
-- **Meta description:** `Use this TradingView reversal indicator to spot entries, exits, and buy/sell signals. Start your free trial today.`
+- **Meta description:** `Use this TradingView reversal indicator to spot entries, exits, and buy/sell signals. Start your paid access today.`
 - **H1:** `TradingView Reversal Indicator for Cleaner Entries and Exits`
 - **Suggested H2 structure:**
   - `What the Reversal Indicator Shows on TradingView`
@@ -63,7 +63,7 @@
 - **Primary target keyword:** best tradingview indicator buy sell
 - **Search intent:** transactional
 - **Title tag:** `TradingView Indicator Pricing`
-- **Meta description:** `Compare plans for the best TradingView indicator buy sell workflow. Choose a plan or start a free trial today.`
+- **Meta description:** `Compare plans for the best TradingView indicator buy sell workflow. Choose a plan or buy PivotSnap for $10 today.`
 - **H1:** `Pricing for the TradingView Buy Sell Indicator`
 - **Suggested H2 structure:**
   - `TradingView Indicator Pricing Plans`
@@ -379,20 +379,20 @@ Core navigation should include `/`, `/how-it-works`, `/pricing`, `/free-trial`, 
 
 | Blog URL | Link to core page(s) | Anchor text |
 |---|---|---|
-| `/blog/best-reversal-indicator-tradingview` | `/; /pricing; /free-trial` | TradingView reversal indicator; compare indicator pricing; try the reversal indicator free |
+| `/blog/best-reversal-indicator-tradingview` | `/; /pricing; /free-trial` | TradingView reversal indicator; compare indicator pricing; buy PivotSnap for $10 |
 | `/blog/trend-reversal-trading-strategy` | `/how-it-works; /; /free-trial` | entry and exit signal logic; reversal indicator for TradingView; test reversal signals |
-| `/blog/buy-sell-signal-indicator` | `/how-it-works; /pricing; /free-trial` | how buy and sell signals work; indicator pricing; try buy sell signals free |
-| `/blog/swing-trading-indicator` | `/; /how-it-works; /free-trial` | TradingView swing trading indicator; entry exit indicator logic; try it on your charts |
+| `/blog/buy-sell-signal-indicator` | `/how-it-works; /pricing; /free-trial` | how buy and sell signals work; indicator pricing; buy PivotSnap for $10 |
+| `/blog/swing-trading-indicator` | `/; /how-it-works; /free-trial` | TradingView swing trading indicator; entry exit indicator logic; buy PivotSnap for $10 |
 | `/blog/fair-value-gap-trading` | `/how-it-works; /tradingview-script; /free-trial` | confirmation signal logic; TradingView indicator setup; test reversal entries |
-| `/blog/supply-demand-trading-zones` | `/how-it-works; /; /free-trial` | entry exit indicator; reversal indicator overview; try signals on TradingView |
+| `/blog/supply-demand-trading-zones` | `/how-it-works; /; /free-trial` | entry exit indicator; reversal indicator overview; buy PivotSnap for $10 |
 | `/blog/rsi-divergence-reversal-signals` | `/how-it-works; /tradingview-script; /free-trial` | reversal confirmation logic; TradingView reversal script; try divergence confirmations |
 | `/blog/breaker-blocks-vs-order-blocks` | `/how-it-works; /tradingview-script; /` | market reversal signals; TradingView indicator script; reversal indicator overview |
-| `/blog/multi-timeframe-analysis-trading` | `/how-it-works; /tradingview-script; /free-trial` | entry filter logic; TradingView setup guide; try multi-timeframe reversal signals |
+| `/blog/multi-timeframe-analysis-trading` | `/how-it-works; /tradingview-script; /free-trial` | entry filter logic; TradingView setup guide; buy PivotSnap for $10 |
 | `/blog/stochastic-momentum-index` | `/how-it-works; /; /free-trial` | momentum confirmation signals; TradingView reversal indicator; try the indicator |
 | `/blog/trading-ai-vs-indicators` | `/tradingview-script; /pricing; /free-trial` | TradingView indicator script; indicator pricing; test the signal indicator |
 | `/blog/tradingview-indicator-not-showing` | `/tradingview-script; /faq; /free-trial` | TradingView setup instructions; indicator FAQ; get access to the script |
 | `/blog/trend-reversal-patterns` | `/how-it-works; /; /free-trial` | reversal signal confirmation; reversal indicator for patterns; try pattern-based signals |
-| `/blog/trendspider-vs-tradingview-indicators` | `/; /pricing; /free-trial` | TradingView reversal indicator; compare our pricing; try the indicator free |
+| `/blog/trendspider-vs-tradingview-indicators` | `/; /pricing; /free-trial` | TradingView reversal indicator; compare our pricing; buy PivotSnap for $10 |
 
 ## Build Acceptance Checklist
 

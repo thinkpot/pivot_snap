@@ -20,11 +20,16 @@ export async function POST(request: Request) {
   const stripe = new Stripe(secretKey, { apiVersion: '2024-12-18.acacia' as Stripe.LatestApiVersion })
   const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://pivotsnap.tech'
   const session = await stripe.checkout.sessions.create({
-    mode: 'subscription',
+    mode: 'payment',
     customer_email: parsed.data.email,
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${origin}/free-trial?checkout=success`,
     cancel_url: `${origin}/pricing?checkout=cancelled`,
+    metadata: {
+      product: 'PivotSnap TradingView Indicator',
+      purchase_type: 'one_time',
+      delivery: 'email',
+    },
   })
 
   return NextResponse.json({ url: session.url })

@@ -15,6 +15,9 @@ export function CheckoutButton({ label = 'Start checkout', planName = 'default' 
     setStatus('loading')
     trackEvent('checkout_started', {
       plan_name: planName,
+        purchase_type: 'one_time',
+        value: 10,
+        currency: 'USD',
       page_path: '/pricing',
     })
 
@@ -37,7 +40,7 @@ export function CheckoutButton({ label = 'Start checkout', planName = 'default' 
       <button onClick={startCheckout} disabled={status === 'loading'} className="mt-8 inline-flex rounded-full bg-ink px-6 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">
         {status === 'loading' ? 'Starting checkout...' : label}
       </button>
-      {status === 'error' ? <p className="mt-3 text-sm text-red-600">Checkout is not configured yet. Please try the free trial or contact support.</p> : null}
+      {status === 'error' ? <p className="mt-3 text-sm text-red-600">Checkout is not configured yet. Please contact support or try again later.</p> : null}
     </div>
   )
 }

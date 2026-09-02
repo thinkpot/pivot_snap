@@ -28,16 +28,17 @@ const content: Record<LegalSlug, string[]> = {
     'We may update these terms as the product evolves. Continued use means you accept the updated terms.',
   ],
   privacy: [
-    'We collect information you provide, such as email address, subscription status, and support messages.',
+    'We collect information you provide, such as email address, purchase status, and support messages.',
     'We use this information to provide product access, process payments, send product updates, and improve the service.',
     'Payment details are processed by Stripe and are not stored directly on our servers.',
     'Contact us to request access, correction, or deletion of your personal information where legally required.',
   ],
   'refund-policy': [
-    'Refund eligibility depends on the subscription plan, promotional offer, and time since purchase.',
-    'If a free trial is offered, please use it to evaluate whether the indicator fits your workflow before purchasing.',
-    'Refund requests may be denied for abuse, excessive use, or violations of the terms of service.',
-    'This template should be reviewed by counsel before launch and updated with your final commercial policy.',
+    'PivotSnap is a digital TradingView indicator/Pine Script product delivered by email after purchase.',
+    'Because the code or access link may be delivered immediately, refund requests are generally not available after delivery has occurred.',
+    'If delivery has not yet occurred, contact support as soon as possible and we may review cancellation or refund requests on a case-by-case basis.',
+    'Refund requests may be denied for abuse, resale, redistribution, reverse engineering, excessive use, or violations of the terms of service.',
+    'This refund policy is placeholder language and should be reviewed by counsel before launch and updated with your final commercial policy.',
   ],
 }
 

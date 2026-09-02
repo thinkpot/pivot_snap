@@ -39,9 +39,9 @@ const faqs = [
       'No. PivotSnap is software and educational content only. It does not provide financial, investment, tax, or legal advice. Trading involves risk, and you are responsible for your own decisions, position sizing, and risk management.',
   },
   {
-    question: 'Can I try PivotSnap before paying?',
+    question: 'How much does PivotSnap cost?',
     answer:
-      'The site is structured around a free-trial flow so traders can test whether the indicator fits their TradingView workflow before choosing a paid plan. Use the free trial page to join the early access or trial list.',
+      'PivotSnap is sold as a $10 one-time purchase. After payment, the Pine Script code or access instructions are delivered by email. There is no monthly subscription or recurring billing for the current offer.',
   },
 ]
 

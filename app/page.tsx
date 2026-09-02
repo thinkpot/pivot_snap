@@ -29,7 +29,7 @@ export default function HomePage() {
           <h1 className="mt-4 text-4xl font-black tracking-tight text-ink md:text-6xl">{page.h1}</h1>
           <p className="mt-6 text-lg leading-8 text-slate-600">{page.description}</p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <Link href="/free-trial" className="rounded-full bg-ink px-6 py-3 font-semibold text-white hover:bg-slate-700">Start free trial</Link>
+            <Link href="/pricing" className="rounded-full bg-ink px-6 py-3 font-semibold text-white hover:bg-slate-700">Buy for $10</Link>
             <Link href="/how-it-works" className="rounded-full border border-slate-300 px-6 py-3 font-semibold text-ink hover:bg-slate-50">See how it works</Link>
           </div>
         </div>

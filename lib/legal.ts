@@ -13,7 +13,7 @@ export const legalPages = {
   },
   'refund-policy': {
     title: 'Refund Policy',
-    description: 'Refund policy for PivotSnap Trading Indicator subscriptions and purchases.',
+    description: 'Refund policy for PivotSnap Trading Indicator digital purchases.',
   },
 } as const
 

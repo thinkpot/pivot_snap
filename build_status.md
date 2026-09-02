@@ -12,7 +12,7 @@
 - Built priority pages first with H1/meta content from `site_architecture.csv`: homepage, how-it-works, pricing, and free-trial.
 - Added placeholder chart/image slots using `next/image` through `components/PlaceholderImage.tsx`.
 - Added four legal template pages: risk disclaimer, terms, privacy, and refund policy.
-- Added API route scaffolds for Stripe Checkout test-mode subscriptions and email capture.
+- Added API route scaffolds for Stripe Checkout test-mode one-time payments and email capture.
 - Added shared layout, header, footer, breadcrumbs, JSON-LD helper, CTA component, Tailwind setup, TypeScript config, and environment variable example.
 
 ## Needs Your Input
@@ -22,7 +22,7 @@
 - **Vercel account/project:** connect this repo/directory to Vercel and configure build settings.
 - **Real chart screenshots/GIFs:** replace placeholder image slots with compressed TradingView screenshots/GIF demos.
 - **Legal review:** risk disclaimer, terms, privacy, and refund policy are standard templates and require legal review.
-- **Final pricing:** update plan names, prices, and Stripe price IDs.
+- **Stripe one-time $10 Price ID:** update plan names, prices, and Stripe price IDs.
 - **Full article drafts:** MDX files are scaffolds; expand each to the target word count in `content_calendar.csv`.
 
 ## Local Commands

@@ -15,21 +15,39 @@ export function CheckoutButton({ label = 'Start checkout', planName = 'default' 
     setStatus('loading')
     trackEvent('checkout_started', {
       plan_name: planName,
-        purchase_type: 'one_time',
-        value: 10,
-        currency: 'USD',
+      payment_provider: 'dodo_payments',
+      purchase_type: 'one_time',
+      value: 10,
+      currency: 'USD',
       page_path: '/pricing',
     })
 
     try {
-      const response = await fetch('/api/checkout', {
+      const response = await fetch('/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          product_id: process.env.NEXT_PUBLIC_DODO_PAYMENTS_PRODUCT_ID,
+          quantity: 1,
+          customer: {},
+          billing: {
+            city: 'NA',
+            country: 'US',
+            state: 'NA',
+            street: 'NA',
+            zipcode: '00000',
+          },
+          metadata: {
+            product: 'PivotSnap TradingView Indicator',
+            purchase_type: 'one_time',
+            delivery: 'email',
+          },
+        }),
       })
-      const data = (await response.json()) as { url?: string; error?: string }
-      if (!response.ok || !data.url) throw new Error(data.error || 'Checkout failed')
-      window.location.href = data.url
+      const data = (await response.json()) as { payment_link?: string; checkout_url?: string; url?: string; error?: string }
+      const checkoutUrl = data.checkout_url || data.payment_link || data.url
+      if (!response.ok || !checkoutUrl) throw new Error(data.error || 'Checkout failed')
+      window.location.href = checkoutUrl
     } catch {
       setStatus('error')
     }

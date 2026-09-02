@@ -3,7 +3,7 @@ import Link from 'next/link'
 const nav = [
   ['How it works', '/how-it-works'],
   ['Pricing', '/pricing'],
-  ['Free trial', '/free-trial'],
+  ['Get access', '/free-trial'],
   ['TradingView script', '/tradingview-script'],
   ['Blog', '/blog'],
 ]
@@ -16,8 +16,8 @@ export function Header() {
         <nav className="hidden items-center gap-6 text-sm font-medium text-slate-700 md:flex">
           {nav.map(([label, href]) => <Link key={href} href={href} className="hover:text-ink">{label}</Link>)}
         </nav>
-        <Link href="/free-trial" className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
-          Start free
+        <Link href="/pricing" className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
+          Buy for $10
         </Link>
       </div>
     </header>

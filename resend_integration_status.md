@@ -34,8 +34,6 @@ Added dependency:
 RESEND_API_KEY=replace_me_resend_api_key
 RESEND_FROM_EMAIL=code@pivotsnap.tech
 SUPPORT_EMAIL=support@pivotsnap.tech
-PINE_SCRIPT_DELIVERY_URL=https://pivotsnap.tech/tradingview-script
-PINE_SCRIPT_CODE=replace_me_with_actual_pine_script_or_use_delivery_url
 ```
 
 No real API keys should be committed. Add real values directly in Vercel and/or your local `.env` file.
@@ -61,9 +59,7 @@ The Resend email includes:
 
 - Thank-you message for purchasing PivotSnap.
 - Product context: PivotSnap is a TradingView reversal, entry, exit, and buy/sell signal indicator.
-- Pine Script delivery:
-  - If `PINE_SCRIPT_CODE` is set to the real code, the email includes the code directly in plain text and HTML.
-  - Otherwise, it sends the `PINE_SCRIPT_DELIVERY_URL` link/instructions.
+- Dodo Payments delivers the Pine Script file as a product attachment. Resend sends a welcome/setup email only.
 - Setup instructions:
   - Open TradingView.
   - Go to Pine Editor.
@@ -105,21 +101,7 @@ RESEND_FROM_EMAIL=code@pivotsnap.tech
 SUPPORT_EMAIL=support@pivotsnap.tech
 ```
 
-4. Choose delivery method:
-
-Option A — email code directly:
-
-```env
-PINE_SCRIPT_CODE=your_actual_pine_script_code
-```
-
-Option B — email a secure/private delivery link:
-
-```env
-PINE_SCRIPT_DELIVERY_URL=https://pivotsnap.tech/your-secure-delivery-page
-```
-
-5. Confirm the exact Dodo success event name from live/test webhooks and adjust event detection if needed.
+4. 5. Confirm the exact Dodo success event name from live/test webhooks and adjust event detection if needed.
 
 6. Replace `/tmp` purchase logging with durable storage before relying on it for support/refund records.
 

@@ -125,7 +125,6 @@ Existing delivery variables:
 
 ```env
 EMAIL_CAPTURE_WEBHOOK_URL=
-PINE_SCRIPT_DELIVERY_URL=https://pivotsnap.tech/tradingview-script
 ```
 
 ## Secret Safety
@@ -175,8 +174,6 @@ NEXT_PUBLIC_DODO_PAYMENTS_PRODUCT_ID=your_dodo_product_id
 RESEND_API_KEY=your_resend_api_key
 RESEND_FROM_EMAIL=code@pivotsnap.tech
 SUPPORT_EMAIL=support@pivotsnap.tech
-PINE_SCRIPT_DELIVERY_URL=your_private_delivery_url
-PINE_SCRIPT_CODE=optional_actual_pine_script_code
 ```
 
 Also needed:

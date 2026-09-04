@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { PricingViewEvent } from '@/components/AnalyticsEvents'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
-import { CheckoutButton } from '@/components/CheckoutButton'
+import { WhopEmbed } from '@/components/WhopEmbed'
 import { JsonLd } from '@/components/JsonLd'
 import { getArchitecturePage, generateSeoMetadata } from '@/lib/seo'
 import { absoluteUrl } from '@/lib/site'
@@ -39,8 +39,8 @@ export default function PricingPage() {
       <section className="mx-auto max-w-6xl px-4 py-14">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-accent">One-time purchase</p>
-          <h1 className="mt-4 text-4xl font-black text-ink md:text-5xl">{page.h1}</h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-600">
+          <h1 className="mt-4 text-4xl font-black text-white md:text-5xl">{page.h1}</h1>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-400">
             Buy PivotSnap for a single $10 USD payment. No subscription, no recurring billing — the TradingView Pine Script access details are delivered by email after purchase.
           </p>
         </div>
@@ -69,7 +69,7 @@ export default function PricingPage() {
             PivotSnap is technical-analysis software only. It does not provide financial advice, execute trades, manage funds, or guarantee trading results.
           </div>
 
-          <CheckoutButton label="Buy PivotSnap for $10" planName="PivotSnap one-time purchase" />
+          <WhopEmbed planId={process.env.NEXT_PUBLIC_WHOP_PLAN_ID || ''} returnUrl="https://pivotsnap.tech/demo?checkout=success" />
           <p className="mt-4 text-sm text-slate-500">
             After payment, check your email for delivery instructions and the Pine Script access link/code.
           </p>

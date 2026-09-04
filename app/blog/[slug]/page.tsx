@@ -31,7 +31,7 @@ function InlineMarkdown({ text }: { text: string }) {
       {linkedSegments.map((segment, segmentIndex) => {
         const link = segment.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
         if (link) {
-          return <Link key={segmentIndex} className="font-semibold text-sky-700 underline" href={link[2]}>{link[1]}</Link>
+          return <Link key={segmentIndex} className="font-semibold text-sky-400 underline" href={link[2]}>{link[1]}</Link>
         }
 
         const boldParts = segment.split(/(\*\*[^*]+\*\*)/g)
@@ -84,7 +84,7 @@ function RenderMarkdown({ source }: { source: string }) {
         if (linkOnly) {
           return (
             <p key={index}>
-              <Link className="font-semibold text-sky-700 underline" href={linkOnly[2]}>{linkOnly[1]}</Link>
+              <Link className="font-semibold text-sky-400 underline" href={linkOnly[2]}>{linkOnly[1]}</Link>
             </p>
           )
         }
@@ -114,8 +114,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       <Breadcrumbs items={[{ name: 'Blog', href: '/blog' }, { name: post.title, href: `/blog/${post.slug}` }]} />
       <article className="mx-auto max-w-3xl px-4 py-14">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">{post.content_silo}</p>
-        <h1 className="mt-4 text-4xl font-black text-ink md:text-5xl">{post.title}</h1>
-        <p className="mt-5 text-lg leading-8 text-slate-600">{post.meta_description}</p>
+        <h1 className="mt-4 text-4xl font-black text-white md:text-5xl">{post.title}</h1>
+        <p className="mt-5 text-lg leading-8 text-slate-400">{post.meta_description}</p>
         <RenderMarkdown source={post.body} />
         <div className="mt-12"><CTA variant={post.cta === '/pricing' ? 'pricing' : 'trial'} /></div>
       </article>

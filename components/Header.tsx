@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import Image from 'next/image'
+import { SpecularButton } from '@/components/ui/specular-button'
 
 const nav = [
   ['How it works', '/how-it-works'],
@@ -10,15 +12,18 @@ const nav = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Link href="/" className="text-lg font-black tracking-tight text-ink">PivotSnap</Link>
-        <nav className="hidden items-center gap-6 text-sm font-medium text-slate-700 md:flex">
-          {nav.map(([label, href]) => <Link key={href} href={href} className="hover:text-ink">{label}</Link>)}
-        </nav>
-        <Link href="/pricing" className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
-          Buy for $10
+    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#080b12]/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-4">
+        <Link href="/" className="flex items-center gap-2 text-lg font-extrabold tracking-tight text-white">
+          <Image src="/logo.png" alt="PivotSnap Logo" width={28} height={28} className="h-7 w-auto" />
+          PivotSnap
         </Link>
+        <nav className="hidden items-center gap-6 text-sm font-medium text-slate-400 md:flex">
+          {nav.map(([label, href]) => <Link key={href} href={href} className="transition hover:text-white">{label}</Link>)}
+        </nav>
+        <SpecularButton href="/pricing" variant="bull" size="sm">
+          Buy for $10
+        </SpecularButton>
       </div>
     </header>
   )

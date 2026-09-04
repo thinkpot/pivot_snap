@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { SpecularButton } from '@/components/ui/specular-button'
 
 export function CTA({ variant = 'trial' }: { variant?: 'trial' | 'pricing' }) {
   const href = variant === 'pricing' ? '/pricing' : '/demo'
@@ -10,9 +10,9 @@ export function CTA({ variant = 'trial' }: { variant?: 'trial' | 'pricing' }) {
       <p className="mt-3 max-w-2xl text-slate-300">
         Review the workflow, then buy PivotSnap once for $10 and receive delivery instructions by email.
       </p>
-      <Link href={href} className="mt-6 inline-flex rounded-full bg-accent px-6 py-3 font-semibold text-ink hover:bg-sky-300">
+      <SpecularButton href={href} variant="bull" className="mt-6">
         {label}
-      </Link>
+      </SpecularButton>
     </div>
   )
 }

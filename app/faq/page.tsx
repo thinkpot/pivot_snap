@@ -65,8 +65,8 @@ export default function Page() {
       <JsonLd data={faqSchema} />
       <Breadcrumbs items={[{ name: page.h1, href: page.slug }]} />
       <section className="mx-auto max-w-6xl px-4 py-14">
-        <h1 className="text-4xl font-black text-ink md:text-5xl">{page.h1}</h1>
-        <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">{page.description}</p>
+        <h1 className="text-4xl font-black text-white md:text-5xl">{page.h1}</h1>
+        <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-400">{page.description}</p>
         <div className="mt-10">
           <PlaceholderImage label="FAQ support and TradingView setup screenshot" alt="Trading indicator FAQ and PivotSnap setup placeholder screenshot" />
         </div>

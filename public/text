@@ -1,0 +1,775 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// ©jdehorty (original) | TP/SL + PivotSnap AI confluence upgrade added
+
+//@version=5
+indicator('PivotSnap', 'PivotSnap', true, precision=4, max_labels_count=500, max_lines_count=500)
+
+import jdehorty/MLExtensions/2 as ml
+import jdehorty/KernelFunctions/2 as kernels
+
+// ====================
+// ==== Background ====
+// ====================
+
+// When using Machine Learning algorithms like K-Nearest Neighbors, choosing an
+// appropriate distance metric is essential. Euclidean Distance is often used as
+// the default distance metric, but it may not always be the best choice. This is
+// because market data is often significantly impacted by proximity to significant
+// world events such as FOMC Meetings and Black Swan events. These major economic
+// events can contribute to a warping effect analogous a massive object's
+// gravitational warping of Space-Time. In financial markets, this warping effect
+// operates on a continuum, which can analogously be referred to as "Price-Time".
+
+// ======================
+// ==== Custom Types ====
+// ======================
+
+type Settings
+    float source
+    int neighborsCount
+    int maxBarsBack
+    int featureCount
+    int colorCompression
+    bool showExits
+    bool useDynamicExits
+
+type Label
+    int long
+    int short
+    int neutral
+
+type FeatureArrays
+    array<float> f1
+    array<float> f2
+    array<float> f3
+    array<float> f4
+    array<float> f5
+
+type FeatureSeries
+    float f1
+    float f2
+    float f3
+    float f4
+    float f5
+
+type MLModel
+    int firstBarIndex
+    array<int> trainingLabels
+    int loopSize
+    float lastDistance
+    array<float> distancesArray
+    array<int> predictionsArray
+    int prediction
+
+type FilterSettings
+    bool useVolatilityFilter
+    bool useRegimeFilter
+    bool useAdxFilter
+    float regimeThreshold
+    int adxThreshold
+
+type Filter
+    bool volatility
+    bool regime
+    bool adx
+
+// ==========================
+// ==== Helper Functions ====
+// ==========================
+
+series_from(feature_string, _close, _high, _low, _hlc3, f_paramA, f_paramB) =>
+    switch feature_string
+        "RSI" => ml.n_rsi(_close, f_paramA, f_paramB)
+        "WT"  => ml.n_wt(_hlc3, f_paramA, f_paramB)
+        "CCI" => ml.n_cci(_close, f_paramA, f_paramB)
+        "ADX" => ml.n_adx(_high, _low, _close, f_paramA)
+
+get_lorentzian_distance(int i, int featureCount, FeatureSeries featureSeries, FeatureArrays featureArrays) =>
+    switch featureCount
+        5 => math.log(1+math.abs(featureSeries.f1 - array.get(featureArrays.f1, i))) +
+             math.log(1+math.abs(featureSeries.f2 - array.get(featureArrays.f2, i))) +
+             math.log(1+math.abs(featureSeries.f3 - array.get(featureArrays.f3, i))) +
+             math.log(1+math.abs(featureSeries.f4 - array.get(featureArrays.f4, i))) +
+             math.log(1+math.abs(featureSeries.f5 - array.get(featureArrays.f5, i)))
+        4 => math.log(1+math.abs(featureSeries.f1 - array.get(featureArrays.f1, i))) +
+             math.log(1+math.abs(featureSeries.f2 - array.get(featureArrays.f2, i))) +
+             math.log(1+math.abs(featureSeries.f3 - array.get(featureArrays.f3, i))) +
+             math.log(1+math.abs(featureSeries.f4 - array.get(featureArrays.f4, i)))
+        3 => math.log(1+math.abs(featureSeries.f1 - array.get(featureArrays.f1, i))) +
+             math.log(1+math.abs(featureSeries.f2 - array.get(featureArrays.f2, i))) +
+             math.log(1+math.abs(featureSeries.f3 - array.get(featureArrays.f3, i)))
+        2 => math.log(1+math.abs(featureSeries.f1 - array.get(featureArrays.f1, i))) +
+             math.log(1+math.abs(featureSeries.f2 - array.get(featureArrays.f2, i)))
+
+// ================
+// ==== Inputs ====
+// ================
+
+// Settings Object: General User-Defined Inputs
+Settings settings =
+ Settings.new(
+   input.source(title='Source', defval=close, group="General Settings", tooltip="Source of the input data"),
+   input.int(title='Neighbors Count', defval=8, group="General Settings", minval=1, maxval=100, step=1, tooltip="Number of neighbors to consider"),
+   input.int(title="Max Bars Back", defval=2000, group="General Settings"),
+   input.int(title="Feature Count", defval=5, group="Feature Engineering", minval=2, maxval=5, tooltip="Number of features to use for ML predictions."),
+   input.int(title="Color Compression", defval=1, group="General Settings", minval=1, maxval=10, tooltip="Compression factor for adjusting the intensity of the color scale."),
+   input.bool(title="Show Default Exits", defval=false, group="General Settings", tooltip="Default exits occur exactly 4 bars after an entry signal.", inline="exits"),
+   input.bool(title="Use Dynamic Exits", defval=false, group="General Settings", tooltip="Dynamic exits attempt to let profits ride by dynamically adjusting the exit threshold based on kernel regression logic.", inline="exits")
+ )
+
+// Trade Stats Settings
+showTradeStats = input.bool(true, 'Show Trade Stats', tooltip='Displays the trade stats for a given configuration. Useful for optimizing the settings in the Feature Engineering section. This should NOT replace backtesting and should be used for calibration purposes only.', group="General Settings")
+useWorstCase   = input.bool(false, "Use Worst Case Estimates", tooltip="Whether to use the worst case scenario for backtesting. This option assumes that the user does not enter when the signal first appears and instead waits for the bar to close as confirmation.", group="General Settings")
+
+// Filter Settings
+FilterSettings filterSettings =
+ FilterSettings.new(
+   input.bool(title="Use Volatility Filter", defval=true, tooltip="Whether to use the volatility filter.", group="Filters"),
+   input.bool(title="Use Regime Filter", defval=true, group="Filters", inline="regime"),
+   input.bool(title="Use ADX Filter", defval=false, group="Filters", inline="adx"),
+   input.float(title="Threshold", defval=-0.1, minval=-10, maxval=10, step=0.1, tooltip="Threshold for detecting Trending/Ranging markets.", group="Filters", inline="regime"),
+   input.int(title="Threshold", defval=20, minval=0, maxval=100, step=1, tooltip="Threshold for detecting Trending/Ranging markets.", group="Filters", inline="adx")
+ )
+
+// Filter Object
+Filter filter =
+ Filter.new(
+   ml.filter_volatility(1, 10, filterSettings.useVolatilityFilter),
+   ml.regime_filter(ohlc4, filterSettings.regimeThreshold, filterSettings.useRegimeFilter),
+   ml.filter_adx(settings.source, 14, filterSettings.adxThreshold, filterSettings.useAdxFilter)
+  )
+
+// Feature Variables
+f1_string = input.string(title="Feature 1", options=["RSI", "WT", "CCI", "ADX"], defval="RSI", inline="01", group="Feature Engineering")
+f1_paramA = input.int(title="Parameter A", defval=14, inline="02", group="Feature Engineering")
+f1_paramB = input.int(title="Parameter B", defval=1,  inline="02", group="Feature Engineering")
+f2_string = input.string(title="Feature 2", options=["RSI", "WT", "CCI", "ADX"], defval="WT",  inline="03", group="Feature Engineering")
+f2_paramA = input.int(title="Parameter A", defval=10, inline="04", group="Feature Engineering")
+f2_paramB = input.int(title="Parameter B", defval=11, inline="04", group="Feature Engineering")
+f3_string = input.string(title="Feature 3", options=["RSI", "WT", "CCI", "ADX"], defval="CCI", inline="05", group="Feature Engineering")
+f3_paramA = input.int(title="Parameter A", defval=20, inline="06", group="Feature Engineering")
+f3_paramB = input.int(title="Parameter B", defval=1,  inline="06", group="Feature Engineering")
+f4_string = input.string(title="Feature 4", options=["RSI", "WT", "CCI", "ADX"], defval="ADX", inline="07", group="Feature Engineering")
+f4_paramA = input.int(title="Parameter A", defval=20, inline="08", group="Feature Engineering")
+f4_paramB = input.int(title="Parameter B", defval=2,  inline="08", group="Feature Engineering")
+f5_string = input.string(title="Feature 5", options=["RSI", "WT", "CCI", "ADX"], defval="RSI", inline="09", group="Feature Engineering")
+f5_paramA = input.int(title="Parameter A", defval=9,  inline="10", group="Feature Engineering")
+f5_paramB = input.int(title="Parameter B", defval=1,  inline="10", group="Feature Engineering")
+
+// FeatureSeries Object
+featureSeries =
+ FeatureSeries.new(
+   series_from(f1_string, close, high, low, hlc3, f1_paramA, f1_paramB),
+   series_from(f2_string, close, high, low, hlc3, f2_paramA, f2_paramB),
+   series_from(f3_string, close, high, low, hlc3, f3_paramA, f3_paramB),
+   series_from(f4_string, close, high, low, hlc3, f4_paramA, f4_paramB),
+   series_from(f5_string, close, high, low, hlc3, f5_paramA, f5_paramB)
+ )
+
+// FeatureArrays
+var f1Array = array.new_float()
+var f2Array = array.new_float()
+var f3Array = array.new_float()
+var f4Array = array.new_float()
+var f5Array = array.new_float()
+array.push(f1Array, featureSeries.f1)
+array.push(f2Array, featureSeries.f2)
+array.push(f3Array, featureSeries.f3)
+array.push(f4Array, featureSeries.f4)
+array.push(f5Array, featureSeries.f5)
+
+featureArrays =
+ FeatureArrays.new(
+  f1Array,
+  f2Array,
+  f3Array,
+  f4Array,
+  f5Array
+ )
+
+// Label Object
+Label direction =
+ Label.new(
+   long=1,
+   short=-1,
+   neutral=0
+  )
+
+// Derived from General Settings
+maxBarsBackIndex = last_bar_index >= settings.maxBarsBack ? last_bar_index - settings.maxBarsBack : 0
+
+// EMA / SMA Filter Settings
+useEmaFilter  = input.bool(title="Use EMA Filter", defval=false, group="Filters", inline="ema")
+emaPeriod     = input.int(title="Period", defval=200, minval=1, step=1, group="Filters", inline="ema", tooltip="The period of the EMA used for the EMA Filter.")
+isEmaUptrend  = useEmaFilter ? close > ta.ema(close, emaPeriod) : true
+isEmaDowntrend= useEmaFilter ? close < ta.ema(close, emaPeriod) : true
+useSmaFilter  = input.bool(title="Use SMA Filter", defval=false, group="Filters", inline="sma")
+smaPeriod     = input.int(title="Period", defval=200, minval=1, step=1, group="Filters", inline="sma", tooltip="The period of the SMA used for the SMA Filter.")
+isSmaUptrend  = useSmaFilter ? close > ta.sma(close, smaPeriod) : true
+isSmaDowntrend= useSmaFilter ? close < ta.sma(close, smaPeriod) : true
+
+// Kernel Regression Settings
+useKernelFilter    = input.bool(true, "Trade with Kernel", group="Kernel Settings", inline="kernel")
+showKernelEstimate = input.bool(true, "Show Kernel Estimate", group="Kernel Settings", inline="kernel")
+useKernelSmoothing = input.bool(false, "Enhance Kernel Smoothing", tooltip="Uses a crossover based mechanism to smoothen kernel color changes.", inline='1', group='Kernel Settings')
+h   = input.int(8,    'Lookback Window',    minval=3,    tooltip='The number of bars used for the estimation. Recommended range: 3-50', group="Kernel Settings", inline="kernel")
+r   = input.float(8., 'Relative Weighting', step=0.25,   tooltip='Relative weighting of time frames. Recommended range: 0.25-25', group="Kernel Settings", inline="kernel")
+x   = input.int(25,   "Regression Level",   tooltip='Bar index on which to start regression. Recommended range: 2-25', group="Kernel Settings", inline="kernel")
+lag = input.int(2,    "Lag",                tooltip="Lag for crossover detection. Recommended range: 1-2", inline='1', group='Kernel Settings')
+
+// Display Settings
+showBarColors       = input.bool(true,  "Show Bar Colors",             tooltip="Whether to show the bar colors.", group="Display Settings")
+showBarPredictions  = input.bool(true,  "Show Bar Prediction Values",  tooltip="Will show the ML model's evaluation of each bar as an integer.", group="Display Settings")
+useAtrOffset        = input.bool(false, "Use ATR Offset",              tooltip="Will use the ATR offset instead of the bar prediction offset.", group="Display Settings")
+barPredictionsOffset= input.float(0,    "Bar Prediction Offset",       minval=0, tooltip="The offset of the bar predictions as a percentage from the bar high or close.", group="Display Settings")
+
+// pivotsnap AI Confluence Settings
+aiGroup              = "pivotsnap AI Engine"
+useAiConfluence     = input.bool(true,  "Use AI Confluence Engine", group=aiGroup, tooltip="Adds a non-repainting weighted confirmation layer on top of the Lorentzian ML classifier.")
+aiMinConfidence     = input.int(70,     "Minimum AI Confidence", group=aiGroup, minval=1, maxval=100, tooltip="Signals print only when the weighted confluence score reaches this level.")
+aiFastEmaLen        = input.int(21,     "Fast EMA", group=aiGroup, minval=1, inline="emaAI")
+aiSlowEmaLen        = input.int(55,     "Slow EMA", group=aiGroup, minval=1, inline="emaAI")
+aiRsiLen            = input.int(14,     "RSI Length", group=aiGroup, minval=1, inline="rsiAI")
+aiMacdFast          = input.int(12,     "MACD Fast", group=aiGroup, minval=1, inline="macdAI")
+aiMacdSlow          = input.int(26,     "MACD Slow", group=aiGroup, minval=1, inline="macdAI")
+aiMacdSignal        = input.int(9,      "Signal", group=aiGroup, minval=1, inline="macdAI")
+aiStFactor          = input.float(3.0,  "Supertrend Factor", group=aiGroup, minval=0.1, step=0.1, inline="stAI")
+aiStPeriod          = input.int(10,     "ATR Period", group=aiGroup, minval=1, inline="stAI")
+useAiVwapFilter     = input.bool(true,  "Use VWAP Score", group=aiGroup, tooltip="If VWAP is unavailable for the symbol, this score becomes neutral.")
+useAiAdxFilter      = input.bool(true,  "Require ADX Strength", group=aiGroup, inline="adxAI")
+aiAdxLen            = input.int(14,     "Length", group=aiGroup, minval=1, inline="adxAI")
+aiAdxMin            = input.int(18,     "Min", group=aiGroup, minval=1, maxval=100, inline="adxAI")
+useAiVolumeFilter   = input.bool(false, "Require Volume Expansion", group=aiGroup, inline="volAI", tooltip="Disabled by default because many index symbols do not publish usable volume.")
+aiVolumeLen         = input.int(20,     "Length", group=aiGroup, minval=1, inline="volAI")
+aiVolumeMult        = input.float(1.05, "x", group=aiGroup, minval=0.1, step=0.05, inline="volAI")
+useAiHtfConfirm     = input.bool(true,  "Use Confirmed HTF Trend", group=aiGroup, inline="htfAI")
+aiHtfTf             = input.timeframe("60", "TF", group=aiGroup, inline="htfAI", tooltip="Uses the previous closed candle from this timeframe to avoid HTF repaint.")
+aiHtfEmaLen         = input.int(55,     "EMA", group=aiGroup, minval=1, inline="htfAI")
+
+// pivotsnap Visuals
+showAiCloud         = input.bool(true,  "Show AI Trend Cloud", group="Display Settings")
+showSupertrendLine  = input.bool(true,  "Show Supertrend Line", group="Display Settings")
+showAiGlow          = input.bool(true,  "Show AI Background Glow", group="Display Settings")
+showAiDashboard     = input.bool(true,  "Show pivotsnap AI Dashboard", group="Display Settings")
+
+// Indian Index Scanner
+scannerGroup        = "Indian Index Scanner"
+showIndexScanner    = input.bool(true, "Show Bottom-Right Index Scanner", group=scannerGroup)
+scannerTfInput      = input.timeframe("", "Scanner Timeframe", group=scannerGroup, tooltip="Blank uses the chart timeframe. Scanner values use closed candles only.")
+scannerMinConfidence= input.int(70, "Scanner Confidence", group=scannerGroup, minval=1, maxval=100)
+index1Symbol        = input.string("NSE:NIFTY", "Index 1", group=scannerGroup, tooltip="Use the exact TradingView ticker. If unavailable, the scanner row shows N/A instead of stopping the script.")
+index2Symbol        = input.string("NSE:BANKNIFTY", "Index 2", group=scannerGroup)
+index3Symbol        = input.string("NSE:CNXFINANCE", "Index 3", group=scannerGroup)
+index4Symbol        = input.string("NSE:CNXIT", "Index 4", group=scannerGroup)
+index5Symbol        = input.string("BSE:SENSEX", "Index 5", group=scannerGroup)
+scannerTf           = scannerTfInput == "" ? timeframe.period : scannerTfInput
+
+// ================================
+// ==== TP/SL Settings (NEW) ====
+// ================================
+atrLength    = input.int(14,    "ATR Length",          group="TP/SL Settings", minval=1)
+atrMultTP    = input.float(2.0, "TP ATR Multiplier",   group="TP/SL Settings", step=0.25, minval=0.25, tooltip="Take Profit = Entry ± ATR × this value")
+atrMultSL    = input.float(1.0, "SL ATR Multiplier",   group="TP/SL Settings", step=0.25, minval=0.25, tooltip="Stop Loss = Entry ∓ ATR × this value")
+showTPSL     = input.bool(true, "Show TP/SL Lines",    group="TP/SL Settings")
+showEPLine   = input.bool(true, "Show Entry Price Line", group="TP/SL Settings")
+
+// =================================
+// ==== Next Bar Classification ====
+// =================================
+
+src = settings.source
+y_train_series = src[4] < src[0] ? direction.short : src[4] > src[0] ? direction.long : direction.neutral
+var y_train_array = array.new_int(0)
+
+var predictions = array.new_float(0)
+var prediction  = 0.
+var signal      = direction.neutral
+var distances   = array.new_float(0)
+
+array.push(y_train_array, y_train_series)
+
+// =========================
+// ====  Core ML Logic  ====
+// =========================
+
+lastDistance = -1.0
+size     = math.min(settings.maxBarsBack-1, array.size(y_train_array)-1)
+sizeLoop = math.min(settings.maxBarsBack-1, size)
+
+if bar_index >= maxBarsBackIndex
+    for i = 0 to sizeLoop
+        d = get_lorentzian_distance(i, settings.featureCount, featureSeries, featureArrays)
+        if d >= lastDistance and i % 4 != 0
+            lastDistance := d
+            array.push(distances, d)
+            array.push(predictions, math.round(array.get(y_train_array, i)))
+            if array.size(predictions) > settings.neighborsCount
+                lastDistance := array.get(distances, math.round(settings.neighborsCount*3/4))
+                array.shift(distances)
+                array.shift(predictions)
+    prediction := array.sum(predictions)
+
+// ============================
+// ==== Prediction Filters ====
+// ============================
+
+filter_all = filter.volatility and filter.regime and filter.adx
+
+signal := prediction > 0 and filter_all ? direction.long : prediction < 0 and filter_all ? direction.short : nz(signal[1])
+
+var int barsHeld = 0
+barsHeld := ta.change(signal) ? 0 : barsHeld + 1
+isHeldFourBars        = barsHeld == 4
+isHeldLessThanFourBars= 0 < barsHeld and barsHeld < 4
+
+isDifferentSignalType = ta.change(signal)
+isEarlySignalFlip     = ta.change(signal) and (ta.change(signal[1]) or ta.change(signal[2]) or ta.change(signal[3]))
+isBuySignal           = signal == direction.long  and isEmaUptrend   and isSmaUptrend
+isSellSignal          = signal == direction.short and isEmaDowntrend and isSmaDowntrend
+isLastSignalBuy       = signal[4] == direction.long  and isEmaUptrend[4]   and isSmaUptrend[4]
+isLastSignalSell      = signal[4] == direction.short and isEmaDowntrend[4] and isSmaDowntrend[4]
+isNewBuySignal        = isBuySignal  and isDifferentSignalType
+isNewSellSignal       = isSellSignal and isDifferentSignalType
+
+// Kernel Regression
+c_green     = color.new(#009988, 20)
+c_red       = color.new(#CC3311, 20)
+transparent = color.new(#000000, 100)
+yhat1 = kernels.rationalQuadratic(settings.source, h, r, x)
+yhat2 = kernels.gaussian(settings.source, h-lag, x)
+kernelEstimate = yhat1
+
+bool wasBearishRate = yhat1[2] > yhat1[1]
+bool wasBullishRate = yhat1[2] < yhat1[1]
+bool isBearishRate  = yhat1[1] > yhat1
+bool isBullishRate  = yhat1[1] < yhat1
+isBearishChange = isBearishRate and wasBullishRate
+isBullishChange = isBullishRate and wasBearishRate
+
+bool isBullishCrossAlert = ta.crossover(yhat2, yhat1)
+bool isBearishCrossAlert = ta.crossunder(yhat2, yhat1)
+bool isBullishSmooth     = yhat2 >= yhat1
+bool isBearishSmooth     = yhat2 <= yhat1
+
+color colorByCross = isBullishSmooth ? c_green : c_red
+color colorByRate  = isBullishRate   ? c_green : c_red
+color plotColor    = showKernelEstimate ? (useKernelSmoothing ? colorByCross : colorByRate) : transparent
+plot(kernelEstimate, color=plotColor, linewidth=2, title="Kernel Regression Estimate")
+
+bool alertBullish = useKernelSmoothing ? isBullishCrossAlert : isBullishChange
+bool alertBearish = useKernelSmoothing ? isBearishCrossAlert : isBearishChange
+
+isBullish = useKernelFilter ? (useKernelSmoothing ? isBullishSmooth : isBullishRate) : true
+isBearish = useKernelFilter ? (useKernelSmoothing ? isBearishSmooth : isBearishRate) : true
+
+// ===============================
+// ==== pivotsnap AI Confluence ====
+// ===============================
+
+aiEmaFast = ta.ema(settings.source, aiFastEmaLen)
+aiEmaSlow = ta.ema(settings.source, aiSlowEmaLen)
+[aiMacdLine, aiMacdSignalLine, aiMacdHist] = ta.macd(settings.source, aiMacdFast, aiMacdSlow, aiMacdSignal)
+aiRsi = ta.rsi(settings.source, aiRsiLen)
+[aiSupertrend, aiSupertrendDirection] = ta.supertrend(aiStFactor, aiStPeriod)
+[aiPlusDi, aiMinusDi, aiAdx] = ta.dmi(aiAdxLen, aiAdxLen)
+aiVwap = ta.vwap(hlc3)
+aiVolumeMa = ta.sma(volume, aiVolumeLen)
+aiHasVolume = not na(volume) and volume > 0 and not na(aiVolumeMa) and aiVolumeMa > 0
+aiVolumePass = not useAiVolumeFilter or not aiHasVolume or volume >= aiVolumeMa * aiVolumeMult
+
+aiHtfClose = request.security(syminfo.tickerid, aiHtfTf, close[1], gaps=barmerge.gaps_off, lookahead=barmerge.lookahead_off)
+aiHtfEma = request.security(syminfo.tickerid, aiHtfTf, ta.ema(close, aiHtfEmaLen)[1], gaps=barmerge.gaps_off, lookahead=barmerge.lookahead_off)
+aiHtfReady = not na(aiHtfClose) and not na(aiHtfEma)
+
+aiMlBull = prediction > 0
+aiMlBear = prediction < 0
+aiKernelBull = isBullish
+aiKernelBear = isBearish
+aiTrendBull = aiEmaFast > aiEmaSlow and close > aiEmaSlow
+aiTrendBear = aiEmaFast < aiEmaSlow and close < aiEmaSlow
+aiSuperBull = aiSupertrendDirection < 0
+aiSuperBear = aiSupertrendDirection > 0
+aiMacdBull = aiMacdHist > 0 and aiMacdLine > aiMacdSignalLine
+aiMacdBear = aiMacdHist < 0 and aiMacdLine < aiMacdSignalLine
+aiRsiBull = aiRsi >= 52
+aiRsiBear = aiRsi <= 48
+aiVwapBull = not useAiVwapFilter or na(aiVwap) or close > aiVwap
+aiVwapBear = not useAiVwapFilter or na(aiVwap) or close < aiVwap
+aiHtfBull = not useAiHtfConfirm or not aiHtfReady or aiHtfClose > aiHtfEma
+aiHtfBear = not useAiHtfConfirm or not aiHtfReady or aiHtfClose < aiHtfEma
+aiAdxPass = not useAiAdxFilter or aiAdx >= aiAdxMin
+
+aiLongScore =
+     (aiMlBull ? 25 : 0) +
+     (aiKernelBull ? 15 : 0) +
+     (aiSuperBull ? 15 : 0) +
+     (aiMacdBull ? 15 : 0) +
+     (aiRsiBull ? 10 : 0) +
+     (aiTrendBull ? 10 : 0) +
+     (aiVwapBull ? 5 : 0) +
+     (aiHtfBull ? 5 : 0)
+
+aiShortScore =
+     (aiMlBear ? 25 : 0) +
+     (aiKernelBear ? 15 : 0) +
+     (aiSuperBear ? 15 : 0) +
+     (aiMacdBear ? 15 : 0) +
+     (aiRsiBear ? 10 : 0) +
+     (aiTrendBear ? 10 : 0) +
+     (aiVwapBear ? 5 : 0) +
+     (aiHtfBear ? 5 : 0)
+
+aiConfidence = math.max(aiLongScore, aiShortScore)
+aiBias = aiLongScore > aiShortScore ? direction.long : aiShortScore > aiLongScore ? direction.short : direction.neutral
+aiLongPass = not useAiConfluence or (aiBias == direction.long and aiConfidence >= aiMinConfidence and aiAdxPass and aiVolumePass)
+aiShortPass = not useAiConfluence or (aiBias == direction.short and aiConfidence >= aiMinConfidence and aiAdxPass and aiVolumePass)
+confirmedSignalBar = barstate.isconfirmed
+
+aiFastPlot = plot(showAiCloud ? aiEmaFast : na, title="pivotsnap Fast EMA", color=color.new(#00C2A8, 0), linewidth=1)
+aiSlowPlot = plot(showAiCloud ? aiEmaSlow : na, title="pivotsnap Slow EMA", color=color.new(#F25F5C, 0), linewidth=1)
+aiCloudColor = aiBias == direction.long ? color.new(#00C2A8, 86) : aiBias == direction.short ? color.new(#F25F5C, 86) : color.new(color.gray, 92)
+fill(aiFastPlot, aiSlowPlot, color=showAiCloud ? aiCloudColor : na, title="pivotsnap AI Trend Cloud")
+plot(showSupertrendLine ? aiSupertrend : na, title="pivotsnap Supertrend", color=aiSuperBull ? color.new(#00C2A8, 0) : color.new(#F25F5C, 0), linewidth=2, style=plot.style_linebr)
+bgcolor(showAiGlow ? (aiBias == direction.long ? color.new(#00C2A8, 94) : aiBias == direction.short ? color.new(#F25F5C, 94) : na) : na, title="pivotsnap AI Glow")
+
+scanner_signal() =>
+    _emaFast = ta.ema(close, aiFastEmaLen)
+    _emaSlow = ta.ema(close, aiSlowEmaLen)
+    [_macdLine, _macdSignalLine, _macdHist] = ta.macd(close, aiMacdFast, aiMacdSlow, aiMacdSignal)
+    _rsi = ta.rsi(close, aiRsiLen)
+    [_supertrend, _supertrendDirection] = ta.supertrend(aiStFactor, aiStPeriod)
+    [_plusDi, _minusDi, _adx] = ta.dmi(aiAdxLen, aiAdxLen)
+    _vwap = ta.vwap(hlc3)
+    _trendBull = _emaFast > _emaSlow and close > _emaSlow
+    _trendBear = _emaFast < _emaSlow and close < _emaSlow
+    _superBull = _supertrendDirection < 0
+    _superBear = _supertrendDirection > 0
+    _macdBull = _macdHist > 0 and _macdLine > _macdSignalLine
+    _macdBear = _macdHist < 0 and _macdLine < _macdSignalLine
+    _rsiBull = _rsi >= 52
+    _rsiBear = _rsi <= 48
+    _vwapBull = not useAiVwapFilter or na(_vwap) or close > _vwap
+    _vwapBear = not useAiVwapFilter or na(_vwap) or close < _vwap
+    _adxPass = not useAiAdxFilter or _adx >= aiAdxMin
+    _bullScore =
+         (_trendBull ? 25 : 0) +
+         (_superBull ? 25 : 0) +
+         (_macdBull ? 20 : 0) +
+         (_rsiBull ? 15 : 0) +
+         (_vwapBull ? 5 : 0) +
+         (_adxPass ? 10 : 0)
+    _bearScore =
+         (_trendBear ? 25 : 0) +
+         (_superBear ? 25 : 0) +
+         (_macdBear ? 20 : 0) +
+         (_rsiBear ? 15 : 0) +
+         (_vwapBear ? 5 : 0) +
+         (_adxPass ? 10 : 0)
+    _confidence = math.max(_bullScore, _bearScore)
+    _buySetup = _bullScore >= scannerMinConfidence and _bullScore > _bearScore
+    _sellSetup = _bearScore >= scannerMinConfidence and _bearScore > _bullScore
+    _freshBuy = _buySetup and not _buySetup[1]
+    _freshSell = _sellSetup and not _sellSetup[1]
+    _state = _freshBuy ? 1 : _freshSell ? -1 : _buySetup ? 2 : _sellSetup ? -2 : 0
+    [_state[1], _confidence[1], close[1]]
+
+// ===========================
+// ==== Entries and Exits ====
+// ===========================
+
+startLongTrade  = isNewBuySignal  and isBullish and isEmaUptrend   and isSmaUptrend   and aiLongPass  and confirmedSignalBar
+startShortTrade = isNewSellSignal and isBearish and isEmaDowntrend and isSmaDowntrend and aiShortPass and confirmedSignalBar
+
+lastSignalWasBullish = ta.barssince(startLongTrade)  < ta.barssince(startShortTrade)
+lastSignalWasBearish = ta.barssince(startShortTrade) < ta.barssince(startLongTrade)
+barsSinceRedEntry    = ta.barssince(startShortTrade)
+barsSinceRedExit     = ta.barssince(alertBullish)
+barsSinceGreenEntry  = ta.barssince(startLongTrade)
+barsSinceGreenExit   = ta.barssince(alertBearish)
+isValidShortExit     = barsSinceRedExit   > barsSinceRedEntry
+isValidLongExit      = barsSinceGreenExit > barsSinceGreenEntry
+endLongTradeDynamic  = (isBearishChange and isValidLongExit[1])
+endShortTradeDynamic = (isBullishChange and isValidShortExit[1])
+
+endLongTradeStrict  = ((isHeldFourBars and isLastSignalBuy)  or (isHeldLessThanFourBars and isNewSellSignal and isLastSignalBuy))  and startLongTrade[4]
+endShortTradeStrict = ((isHeldFourBars and isLastSignalSell) or (isHeldLessThanFourBars and isNewBuySignal  and isLastSignalSell)) and startShortTrade[4]
+isDynamicExitValid  = not useEmaFilter and not useSmaFilter and not useKernelSmoothing
+endLongTradeRaw     = settings.useDynamicExits and isDynamicExitValid ? endLongTradeDynamic  : endLongTradeStrict
+endShortTradeRaw    = settings.useDynamicExits and isDynamicExitValid ? endShortTradeDynamic : endShortTradeStrict
+endLongTrade        = endLongTradeRaw and confirmedSignalBar
+endShortTrade       = endShortTradeRaw and confirmedSignalBar
+
+// ======================================
+// ==== TP/SL Calculation (NEW) ====
+// ======================================
+
+atrValue = ta.atr(atrLength)
+
+var float entryPrice = na
+var float tpLevel    = na
+var float slLevel    = na
+var bool  inLong     = false
+var bool  inShort    = false
+
+if startLongTrade
+    entryPrice := close
+    tpLevel    := close + atrValue * atrMultTP
+    slLevel    := close - atrValue * atrMultSL
+    inLong     := true
+    inShort    := false
+
+if startShortTrade
+    entryPrice := close
+    tpLevel    := close - atrValue * atrMultTP
+    slLevel    := close + atrValue * atrMultSL
+    inLong     := false
+    inShort    := true
+
+if endLongTrade or endShortTrade
+    inLong  := false
+    inShort := false
+
+// TP/SL hit detection
+tpHitLong  = inLong  and high  >= tpLevel
+slHitLong  = inLong  and low   <= slLevel
+tpHitShort = inShort and low   <= tpLevel
+slHitShort = inShort and high  >= slLevel
+
+// Auto-clear levels when TP or SL is hit
+if tpHitLong or slHitLong or tpHitShort or slHitShort
+    inLong  := false
+    inShort := false
+
+// =========================
+// ==== Plotting Labels ====
+// =========================
+
+plotshape(startLongTrade  ? low  : na, 'pivotsnap BUY',  shape.labelup,   location.belowbar, color=ml.color_green(prediction),  size=size.small, offset=0, text="BUY",  textcolor=color.black)
+plotshape(startShortTrade ? high : na, 'pivotsnap SELL', shape.labeldown, location.abovebar, ml.color_red(-prediction),         size=size.small, offset=0, text="SELL", textcolor=color.white)
+plotshape(endLongTrade  and settings.showExits ? high : na, 'StopBuy',  shape.xcross, location.absolute, color=#3AFF17, size=size.tiny, offset=0)
+plotshape(endShortTrade and settings.showExits ? low  : na, 'StopSell', shape.xcross, location.absolute, color=#FD1707, size=size.tiny, offset=0)
+
+// ============================================
+// ============================================
+// ==== Real-Time TP/SL Lines (NEW) ====
+// ============================================
+
+// Active-trade line/label handles (extended every bar while trade is open)
+var line  activeTpLine  = na
+var line  activeSlLine  = na
+var line  activeEpLine  = na
+var label activeTpLabel = na
+var label activeSlLabel = na
+var label activeEpLabel = na
+
+// Draw fresh TP/SL set on every new signal
+if showTPSL and (startLongTrade or startShortTrade)
+    // Colors: long = green TP / red SL | short = red TP / green SL
+    tpCol = startLongTrade ? color.new(#009988, 0) : color.new(#CC3311, 0)
+    slCol = startLongTrade ? color.new(#CC3311, 0) : color.new(#009988, 0)
+    epCol = color.new(color.gray, 30)
+
+    // TP line
+    activeTpLine := line.new(
+     x1=bar_index, y1=tpLevel,
+     x2=bar_index + 1, y2=tpLevel,
+     color=tpCol,
+     style=line.style_solid,
+     width=2)
+
+    // SL line
+    activeSlLine := line.new(
+     x1=bar_index, y1=slLevel,
+     x2=bar_index + 1, y2=slLevel,
+     color=slCol,
+     style=line.style_solid,
+     width=2)
+
+    // Entry line
+    if showEPLine
+        activeEpLine := line.new(
+         x1=bar_index, y1=entryPrice,
+         x2=bar_index + 1, y2=entryPrice,
+         color=epCol,
+         style=line.style_dashed,
+         width=1)
+
+    // TP label
+    activeTpLabel := label.new(
+     x=bar_index + 1, y=tpLevel,
+     text="TP  " + str.tostring(tpLevel, "#.####"),
+     style=label.style_label_left,
+     color=color.new(tpCol, 10),
+     textcolor=color.white,
+     size=size.small)
+
+    // SL label
+    activeSlLabel := label.new(
+     x=bar_index + 1, y=slLevel,
+     text="SL  " + str.tostring(slLevel, "#.####"),
+     style=label.style_label_left,
+     color=color.new(slCol, 10),
+     textcolor=color.white,
+     size=size.small)
+
+    // Entry label
+    if showEPLine
+        activeEpLabel := label.new(
+         x=bar_index + 1, y=entryPrice,
+         text="Entry  " + str.tostring(entryPrice, "#.####"),
+         style=label.style_label_left,
+         color=color.new(color.gray, 20),
+         textcolor=color.white,
+         size=size.small)
+
+// Extend active lines rightward on every bar while in a trade
+if showTPSL and (inLong or inShort)
+    if not na(activeTpLine)
+        line.set_x2(activeTpLine, bar_index + 3)
+        label.set_x(activeTpLabel, bar_index + 3)
+    if not na(activeSlLine)
+        line.set_x2(activeSlLine, bar_index + 3)
+        label.set_x(activeSlLabel, bar_index + 3)
+    if showEPLine and not na(activeEpLine)
+        line.set_x2(activeEpLine, bar_index + 3)
+        if not na(activeEpLabel)
+            label.set_x(activeEpLabel, bar_index + 3)
+
+// ================
+// ==== Alerts ====
+// ================
+
+// Entry / Exit alerts
+alertcondition(startLongTrade,  title='pivotsnap BUY',        message='pivotsnap BUY | {{ticker}} @ {{close}} | {{interval}}')
+alertcondition(endLongTrade,    title='pivotsnap Close Long', message='pivotsnap CLOSE LONG | {{ticker}} @ {{close}} | {{interval}}')
+alertcondition(startShortTrade, title='pivotsnap SELL',       message='pivotsnap SELL | {{ticker}} @ {{close}} | {{interval}}')
+alertcondition(endShortTrade,   title='pivotsnap Close Short',message='pivotsnap CLOSE SHORT | {{ticker}} @ {{close}} | {{interval}}')
+alertcondition(startShortTrade or startLongTrade, title='pivotsnap Open Position',  message='pivotsnap OPEN POSITION | {{ticker}} @ {{close}} | {{interval}}')
+alertcondition(endShortTrade   or endLongTrade,   title='pivotsnap Close Position', message='pivotsnap CLOSE POSITION | {{ticker}} @ {{close}} | {{interval}}')
+
+// Kernel alerts
+alertcondition(condition=alertBullish and confirmedSignalBar, title='pivotsnap Kernel Bullish', message='pivotsnap KERNEL BULLISH | {{ticker}} @ {{close}} | {{interval}}')
+alertcondition(condition=alertBearish and confirmedSignalBar, title='pivotsnap Kernel Bearish', message='pivotsnap KERNEL BEARISH | {{ticker}} @ {{close}} | {{interval}}')
+
+// TP/SL hit alerts (NEW)
+alertcondition(tpHitLong and confirmedSignalBar,  title='pivotsnap TP Hit Long',  message='pivotsnap TP HIT LONG | {{ticker}} @ {{close}} | {{interval}}')
+alertcondition(slHitLong and confirmedSignalBar,  title='pivotsnap SL Hit Long',  message='pivotsnap SL HIT LONG | {{ticker}} @ {{close}} | {{interval}}')
+alertcondition(tpHitShort and confirmedSignalBar, title='pivotsnap TP Hit Short', message='pivotsnap TP HIT SHORT | {{ticker}} @ {{close}} | {{interval}}')
+alertcondition(slHitShort and confirmedSignalBar, title='pivotsnap SL Hit Short', message='pivotsnap SL HIT SHORT | {{ticker}} @ {{close}} | {{interval}}')
+
+// =========================
+// ==== Display Signals ====
+// =========================
+
+atrSpaced          = useAtrOffset ? ta.atr(1) : na
+compressionFactor  = settings.neighborsCount / settings.colorCompression
+c_pred  = prediction > 0  ? color.from_gradient(prediction,  0, compressionFactor, #787b86, #009988) :
+          prediction <= 0 ? color.from_gradient(prediction, -compressionFactor, 0, #CC3311, #787b86) : na
+c_label = showBarPredictions ? c_pred : na
+c_bars  = showBarColors ? color.new(c_pred, 50) : na
+x_val   = bar_index
+y_val   = useAtrOffset ? prediction > 0 ? high + atrSpaced : low - atrSpaced : prediction > 0 ? high + hl2*barPredictionsOffset/20 : low - hl2*barPredictionsOffset/30
+if showBarPredictions
+    label.new(x_val, y_val, str.tostring(prediction), xloc.bar_index, yloc.price, color.new(color.white, 100), label.style_label_up, c_label, size.normal, text.align_left)
+barcolor(showBarColors ? color.new(c_pred, 50) : na)
+
+// =============================
+// ==== pivotsnap Dashboards  ====
+// =============================
+
+ai_bias_text(_bias) =>
+    _bias == 1 ? "BULL" : _bias == -1 ? "BEAR" : "NEUTRAL"
+
+ai_bias_color(_bias) =>
+    _bias == 1 ? color.new(#00C2A8, 0) : _bias == -1 ? color.new(#F25F5C, 0) : color.new(color.gray, 30)
+
+scanner_text(_sig) =>
+    na(_sig) ? "N/A" : _sig == 1 ? "BUY" : _sig == -1 ? "SELL" : _sig == 2 ? "Bull" : _sig == -2 ? "Bear" : "Wait"
+
+scanner_color(_sig) =>
+    na(_sig) ? color.new(color.gray, 30) : _sig == 1 ? color.new(#00C2A8, 0) : _sig == -1 ? color.new(#F25F5C, 0) : _sig == 2 ? color.new(#00C2A8, 72) : _sig == -2 ? color.new(#F25F5C, 72) : color.new(color.gray, 84)
+
+price_text(_price) =>
+    na(_price) ? "-" : str.tostring(_price, "#.##")
+
+confidence_text(_confidence) =>
+    na(_confidence) ? "-" : str.tostring(_confidence, "#") + "%"
+
+update_scanner_row(_tbl, _row, _symbol, _sig, _confidence, _lastClose) =>
+    _sigColor = scanner_color(_sig)
+    table.cell(_tbl, 0, _row, _symbol, text_color=color.white, bgcolor=color.new(color.black, 18), text_size=size.small)
+    table.cell(_tbl, 1, _row, scanner_text(_sig), text_color=color.white, bgcolor=_sigColor, text_size=size.small)
+    table.cell(_tbl, 2, _row, confidence_text(_confidence), text_color=color.white, bgcolor=color.new(color.black, 18), text_size=size.small)
+    table.cell(_tbl, 3, _row, price_text(_lastClose), text_color=color.white, bgcolor=color.new(color.black, 18), text_size=size.small)
+
+[scanSignal1, scanConfidence1, scanClose1] = request.security(index1Symbol, scannerTf, scanner_signal(), gaps=barmerge.gaps_off, lookahead=barmerge.lookahead_off, ignore_invalid_symbol=true)
+[scanSignal2, scanConfidence2, scanClose2] = request.security(index2Symbol, scannerTf, scanner_signal(), gaps=barmerge.gaps_off, lookahead=barmerge.lookahead_off, ignore_invalid_symbol=true)
+[scanSignal3, scanConfidence3, scanClose3] = request.security(index3Symbol, scannerTf, scanner_signal(), gaps=barmerge.gaps_off, lookahead=barmerge.lookahead_off, ignore_invalid_symbol=true)
+[scanSignal4, scanConfidence4, scanClose4] = request.security(index4Symbol, scannerTf, scanner_signal(), gaps=barmerge.gaps_off, lookahead=barmerge.lookahead_off, ignore_invalid_symbol=true)
+[scanSignal5, scanConfidence5, scanClose5] = request.security(index5Symbol, scannerTf, scanner_signal(), gaps=barmerge.gaps_off, lookahead=barmerge.lookahead_off, ignore_invalid_symbol=true)
+
+var table aiDash = table.new(position.bottom_left, columns=2, rows=7, frame_color=color.new(color.white, 82), frame_width=1, border_width=1, border_color=color.new(color.white, 88))
+if showAiDashboard and barstate.islast
+    _gateText = aiAdxPass and aiVolumePass ? "READY" : not aiAdxPass ? "LOW ADX" : "LOW VOL"
+    table.cell(aiDash, 0, 0, "pivotsnap", text_color=color.white, bgcolor=color.new(color.black, 0), text_size=size.normal)
+    table.cell(aiDash, 1, 0, ai_bias_text(aiBias), text_color=color.white, bgcolor=ai_bias_color(aiBias), text_size=size.normal)
+    table.cell(aiDash, 0, 1, "AI Confidence", text_color=color.gray, bgcolor=color.new(color.black, 15), text_size=size.small)
+    table.cell(aiDash, 1, 1, str.tostring(aiConfidence, "#") + "%", text_color=color.white, bgcolor=ai_bias_color(aiBias), text_size=size.small)
+    table.cell(aiDash, 0, 2, "Long / Short", text_color=color.gray, bgcolor=color.new(color.black, 15), text_size=size.small)
+    table.cell(aiDash, 1, 2, str.tostring(aiLongScore, "#") + " / " + str.tostring(aiShortScore, "#"), text_color=color.white, bgcolor=color.new(color.black, 15), text_size=size.small)
+    table.cell(aiDash, 0, 3, "ML Vote", text_color=color.gray, bgcolor=color.new(color.black, 15), text_size=size.small)
+    table.cell(aiDash, 1, 3, str.tostring(prediction, "#"), text_color=color.white, bgcolor=color.new(color.black, 15), text_size=size.small)
+    table.cell(aiDash, 0, 4, "Filters", text_color=color.gray, bgcolor=color.new(color.black, 15), text_size=size.small)
+    table.cell(aiDash, 1, 4, _gateText, text_color=color.white, bgcolor=_gateText == "READY" ? color.new(#00C2A8, 30) : color.new(#F25F5C, 20), text_size=size.small)
+    table.cell(aiDash, 0, 5, "Mode", text_color=color.gray, bgcolor=color.new(color.black, 15), text_size=size.small)
+    table.cell(aiDash, 1, 5, "No repaint", text_color=color.white, bgcolor=color.new(color.black, 15), text_size=size.small)
+    table.cell(aiDash, 0, 6, "HTF", text_color=color.gray, bgcolor=color.new(color.black, 15), text_size=size.small)
+    table.cell(aiDash, 1, 6, aiHtfTf, text_color=color.white, bgcolor=color.new(color.black, 15), text_size=size.small)
+
+var table indexScanner = table.new(position.bottom_right, columns=4, rows=7, frame_color=color.new(#00C2A8, 35), frame_width=1, border_width=1, border_color=color.new(color.white, 84))
+if showIndexScanner and barstate.islast
+    table.cell(indexScanner, 0, 0, "Indian Index", text_color=color.white, bgcolor=color.new(color.black, 0), text_size=size.small)
+    table.cell(indexScanner, 1, 0, "Signal", text_color=color.white, bgcolor=color.new(color.black, 0), text_size=size.small)
+    table.cell(indexScanner, 2, 0, "AI%", text_color=color.white, bgcolor=color.new(color.black, 0), text_size=size.small)
+    table.cell(indexScanner, 3, 0, "Close", text_color=color.white, bgcolor=color.new(color.black, 0), text_size=size.small)
+    update_scanner_row(indexScanner, 1, index1Symbol, scanSignal1, scanConfidence1, scanClose1)
+    update_scanner_row(indexScanner, 2, index2Symbol, scanSignal2, scanConfidence2, scanClose2)
+    update_scanner_row(indexScanner, 3, index3Symbol, scanSignal3, scanConfidence3, scanClose3)
+    update_scanner_row(indexScanner, 4, index4Symbol, scanSignal4, scanConfidence4, scanClose4)
+    update_scanner_row(indexScanner, 5, index5Symbol, scanSignal5, scanConfidence5, scanClose5)
+    table.cell(indexScanner, 0, 6, "Closed bars", text_color=color.gray, bgcolor=color.new(color.black, 8), text_size=size.tiny)
+    table.cell(indexScanner, 1, 6, scannerTf, text_color=color.gray, bgcolor=color.new(color.black, 8), text_size=size.tiny)
+    table.cell(indexScanner, 2, 6, "Min", text_color=color.gray, bgcolor=color.new(color.black, 8), text_size=size.tiny)
+    table.cell(indexScanner, 3, 6, str.tostring(scannerMinConfidence, "#") + "%", text_color=color.gray, bgcolor=color.new(color.black, 8), text_size=size.tiny)
+
+// =====================
+// ==== Backtesting ====
+// =====================
+
+backTestStream = startLongTrade ? 1 : endLongTrade ? 2 : startShortTrade ? -1 : endShortTrade ? -2 : 0
+plot(backTestStream, "Backtest Stream", display=display.none)
+
+[totalWins, totalLosses, totalEarlySignalFlips, totalTrades, tradeStatsHeader, winLossRatio, winRate] = ml.backtest(high, low, open, startLongTrade, endLongTrade, startShortTrade, endShortTrade, isEarlySignalFlip, maxBarsBackIndex, bar_index, settings.source, useWorstCase)
+
+init_table() =>
+    c_transparent = color.new(color.black, 100)
+    table.new(position.top_right, columns=2, rows=7, frame_color=color.new(color.black, 100), frame_width=1, border_width=1, border_color=c_transparent)
+
+update_table(tbl, tradeStatsHeader, totalTrades, totalWins, totalLosses, winLossRatio, winRate, stopLosses) =>
+    c_transparent = color.new(color.black, 100)
+    safeWinRate = totalTrades > 0 ? totalWins * 1.0 / totalTrades : 0.0
+    safeWlRatio = totalLosses > 0 ? totalWins * 1.0 / totalLosses : totalWins * 1.0
+    table.cell(tbl, 0, 0, tradeStatsHeader,                                                                   text_halign=text.align_center, text_color=color.gray, text_size=size.normal)
+    table.cell(tbl, 0, 1, 'Winrate',                                                                          text_halign=text.align_center, bgcolor=c_transparent, text_color=color.gray, text_size=size.normal)
+    table.cell(tbl, 1, 1, str.tostring(safeWinRate, '#.#%'),                                                  text_halign=text.align_center, bgcolor=c_transparent, text_color=color.gray, text_size=size.normal)
+    table.cell(tbl, 0, 2, 'Trades',                                                                           text_halign=text.align_center, bgcolor=c_transparent, text_color=color.gray, text_size=size.normal)
+    table.cell(tbl, 1, 2, str.tostring(totalTrades, '#') + ' (' + str.tostring(totalWins, '#') + '|' + str.tostring(totalLosses, '#') + ')', text_halign=text.align_center, bgcolor=c_transparent, text_color=color.gray, text_size=size.normal)
+    table.cell(tbl, 0, 5, 'WL Ratio',                                                                        text_halign=text.align_center, bgcolor=c_transparent, text_color=color.gray, text_size=size.normal)
+    table.cell(tbl, 1, 5, str.tostring(safeWlRatio, '0.00'),                                                 text_halign=text.align_center, bgcolor=c_transparent, text_color=color.gray, text_size=size.normal)
+    table.cell(tbl, 0, 6, 'Early Signal Flips',                                                               text_halign=text.align_center, bgcolor=c_transparent, text_color=color.gray, text_size=size.normal)
+    table.cell(tbl, 1, 6, str.tostring(totalEarlySignalFlips, '#'),                                           text_halign=text.align_center, bgcolor=c_transparent, text_color=color.gray, text_size=size.normal)
+
+if showTradeStats
+    var tbl = init_table()
+    if barstate.islast
+        update_table(tbl, tradeStatsHeader, totalTrades, totalWins, totalLosses, winLossRatio, winRate, totalEarlySignalFlips)

@@ -19,8 +19,8 @@ export default function DemoPage() {
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 md:grid-cols-[0.9fr_1.1fr]">
         <div>
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-accent">PivotSnap demo</p>
-          <h1 className="text-4xl font-black text-ink md:text-5xl">{page.h1}</h1>
-          <p className="mt-5 text-lg leading-8 text-slate-600">{page.description}</p>
+          <h1 className="text-4xl font-black text-white md:text-5xl">{page.h1}</h1>
+          <p className="mt-5 text-lg leading-8 text-slate-400">{page.description}</p>
           <DemoEmailForm />
         </div>
         <DemoVideo />

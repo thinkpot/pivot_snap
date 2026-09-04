@@ -97,7 +97,7 @@ export default function LegalPage({ params }: { params: { slug: string } }) {
     <main>
       <Breadcrumbs items={[{ name: 'Legal', href: '/legal/terms' }, { name: page.title, href: `/legal/${params.slug}` }]} />
       <article className="mx-auto max-w-3xl px-4 py-14">
-        <h1 className="text-4xl font-black text-ink md:text-5xl">{page.title}</h1>
+        <h1 className="text-4xl font-black text-white md:text-5xl">{page.title}</h1>
         <p className="mt-4 text-slate-500">Last updated: {params.slug === 'refund-policy' ? 'September 2, 2026' : 'September 1, 2026'}</p>
         <div className="prose mt-8 max-w-none">
           {params.slug === 'refund-policy' ? (

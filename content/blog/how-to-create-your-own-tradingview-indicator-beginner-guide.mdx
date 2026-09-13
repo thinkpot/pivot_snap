@@ -8,26 +8,66 @@ cta: "/demo"
 target_word_count: "1600"
 ---
 
-## Overview
+Building your own TradingView indicator sounds intimidating if you've never written code, but Pine Script — TradingView's built-in scripting language, currently on version 6 — was specifically designed to be more approachable than general-purpose programming languages. This guide walks through the actual first steps, from opening the editor to publishing a working indicator.
 
-This scaffold targets **how to create your own tradingview indicator** as part of the **TradingView Setup & Troubleshooting** content silo.
+## What You Need Before Starting
 
-## Key TradingView Workflow
+No separate software is required — Pine Script runs entirely inside TradingView's browser-based Pine Editor, accessible from the bottom panel of any chart. You don't need a paid plan to write and test indicators on your own chart, though publishing publicly and some advanced features have their own considerations.
 
-Explain how the concept applies to reversal signals, entry timing, exit planning, and buy/sell alerts.
+## Step 1: Open the Pine Editor
 
-## Examples to Add
+From any TradingView chart, open the Pine Editor panel at the bottom of the screen. This gives you a blank code editor alongside your live chart, so you can write and immediately test against real price data.
 
-- Replace this section with compressed chart screenshots or GIFs using `next/image`.
-- Add alt text that describes the chart naturally and includes the topic where helpful.
-- Include practical examples without promising trading outcomes.
+## Step 2: Understand the Basic Structure
 
-## Internal Links to Include
+Every Pine Script indicator starts with a version declaration and an `indicator()` call that names your script and sets basic display options. From there, the core building blocks are:
 
-Core links: /tradingview-script; /blog/tradingview-indicator-not-showing; /faq | anchors: TradingView indicator script setup; TradingView setup questions
+- **Inputs** — values a user can adjust without editing code (like a moving average length).
+- **Calculations** — the actual logic, often using Pine's built-in functions for common calculations (moving averages, RSI, and similar are all built in, so you rarely need to calculate these from scratch).
+- **Plots** — the `plot()` function draws your calculated values onto the chart.
+- **Conditions** — logic that checks whether specific criteria are met (for example, whether price crossed above a moving average).
+- **Alerts** — `alertcondition()` exposes a condition that can trigger a TradingView alert, separate from just plotting a line.
 
-Silo links: /blog/tradingview-indicator-reaction-entry-how-to-time-pullbacks (tradingview indicator reaction entry); /blog/tradingview-entry-exit-indicator-setup-and-signal-workflow (tradingview entry exit indicator)
+## Step 3: Write a Simple First Indicator
 
-## CTA
+A reasonable first project is something you can verify visually right away — for example, plotting a moving average, or marking candles where a simple condition is met (like price closing above the prior day's high). Starting simple and confirming each piece works before adding complexity is a far more effective learning approach than trying to replicate a complex reversal indicator on day one.
 
-Link readers to [/demo](/demo).
+## Step 4: Test Against Real Price Action
+
+Apply your script to your chart and watch how it behaves across different market conditions — trending, ranging, high and low volatility. This is also the point to start thinking about repainting: does your calculation use only data available at the time each bar closed, or does it reference something that could change retroactively (like future bars, or improperly implemented higher-timeframe data)? Building this awareness from your very first script is a habit worth having before you build anything you intend to actually trade from.
+
+## Step 5: Add Alerts
+
+Once your core logic works, use `alertcondition()` to expose specific triggers as alerts you can configure through TradingView's alert dialog — this is what turns a script you have to watch manually into one that can notify you.
+
+## Step 6: Refine, Document, and (Optionally) Publish
+
+As your script matures, add clear input labels and comments explaining your logic — both for your own future reference and for anyone else who might use it if you choose to publish. TradingView allows publishing scripts publicly (open or closed source) or keeping them private for your own use only.
+
+## Common Mistakes Beginners Make
+
+- **Trying to build a complete, complex strategy as a first project.** Start with something simple enough to fully verify by eye.
+- **Not checking for repainting from the start.** It's much easier to build this awareness into your habits early than to retrofit it into a script you've already grown attached to.
+- **Ignoring Pine Script's built-in functions** and manually recalculating things (like RSI or moving averages) that are already available and well-tested as built-ins.
+- **Not testing across varied market conditions** before trusting a script's behavior.
+
+## When Building Your Own Isn't the Right Answer
+
+Learning Pine Script is genuinely valuable for understanding how indicators work, but it's not a requirement for using one well. If your goal is applying solid reversal signal logic rather than learning to code, a well-built existing tool — like [PivotSnap](/tradingview-script), which highlights potential reversal, entry, and exit zones directly on your chart — can get you there faster, while still leaving room to learn Pine Script separately if you're interested.
+
+## Frequently Asked Questions
+
+**Do I need to know how to code to use TradingView effectively?**
+No — TradingView's built-in indicators and thousands of community and paid scripts cover most needs without writing any code yourself. Pine Script is worth learning if you specifically want custom logic no existing tool provides.
+
+**How long does it take to learn Pine Script basics?**
+Rough estimates for a structured beginner path range around a few weeks of consistent practice to get comfortable with core syntax, indicators, and alerts — building genuinely original, well-tested strategies takes longer.
+
+**Can I sell an indicator I build in Pine Script?**
+Yes, TradingView supports publishing invite-only scripts that you can monetize separately, subject to TradingView's house rules for script publishing.
+
+## Putting It Into Practice
+
+Creating your own TradingView indicator is approachable once you break it into the core building blocks — inputs, calculations, plots, conditions, and alerts — and start with something simple enough to fully verify. Building repainting awareness from your first script is a habit that pays off in everything you build afterward.
+
+If you'd rather start from a working reversal indicator and learn from how it's set up, [watch the demo](/demo) or see our [TradingView script setup guide](/tradingview-script) for PivotSnap.

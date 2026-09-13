@@ -8,26 +8,81 @@ cta: "/demo"
 target_word_count: "2600"
 ---
 
-## Overview
+If you've spent any time around smart money concepts or ICT-style charts, you've seen little rectangles labeled "FVG" sitting between candles. A fair value gap is one of the simplest concepts in the whole smart-money toolkit to spot, but traders routinely misuse it — either treating every gap as a guaranteed magnet for price, or ignoring context entirely and trading the zone in isolation. This guide covers what a fair value gap actually is, why it forms, and how to trade it without falling into either trap.
 
-This scaffold targets **fair value gap** as part of the **Smart Money & Market Structure** content silo.
+## What Is a Fair Value Gap?
 
-## Key TradingView Workflow
+A fair value gap (FVG) is a three-candle price imbalance. It forms when a strong, fast move leaves a portion of the chart untraded — specifically, when the wick of the first candle and the wick of the third candle don't overlap, leaving a visible gap in the middle candle's range that neither candle before nor after it touched.
 
-Explain how the concept applies to reversal signals, entry timing, exit planning, and buy/sell alerts.
+In plain terms: price moved so quickly in one direction that buyers and sellers never got to "negotiate" at those prices. No two-sided trading happened there. That gap in trading activity is what the FVG marks, and it's why some traders call it an "imbalance" instead.
 
-## Examples to Add
+**Bullish FVG:** forms during a sharp upward move, leaving an untraded gap below the current price.
 
-- Replace this section with compressed chart screenshots or GIFs using `next/image`.
-- Add alt text that describes the chart naturally and includes the topic where helpful.
-- Include practical examples without promising trading outcomes.
+**Bearish FVG:** forms during a sharp downward move, leaving an untraded gap above the current price.
 
-## Internal Links to Include
+## Why Fair Value Gaps Form
 
-Core links: /blog/tradingview-indicator-liquidity-zones; /blog/supply-demand-trading-zones; /how-it-works | anchors: liquidity zones; supply and demand trading
+Markets don't move in a straight line by accident. A fair value gap usually shows up around a burst of aggressive, one-sided order flow — a strong news reaction, a large institutional order working through the book, or a breakout that triggers a wave of stop orders in the same direction. Because so many participants are trying to transact in the same direction at once, price skips through a range without the usual back-and-forth that leaves a "fair" two-sided market in its wake.
 
-Silo links: /blog/tradingview-indicator-liquidity-zones-for-reversal-entries (tradingview indicator liquidity zones); /blog/supply-demand-trading-zones (supply demand trading); /blog/breaker-blocks-vs-order-blocks (breaker block)
+That's the core idea behind why FVGs get revisited: the market tends to want to return and "fill in" the levels that never got properly traded, before continuing on its original path. It's not a law of physics — it's a tendency rooted in how order flow and liquidity actually behave, and it doesn't hold up in every single instance.
 
-## CTA
+## How to Identify a Fair Value Gap on a Chart
 
-Link readers to [/demo](/demo).
+1. **Find a strong, directional 3-candle sequence.** You're looking for a decisive move, not routine chop.
+2. **Check the first and third candle's wicks.** If there's a price range between them that the middle candle's body pushed through, but the first and third candle didn't overlap into, that untouched range is your FVG.
+3. **Mark the gap.** Most traders box the untraded range from the first candle's high (for a bullish FVG) or low (for a bearish FVG) to the corresponding point on the third candle.
+4. **Note the context.** An FVG that forms in the direction of the higher-timeframe trend carries more weight than one formed against it — context always matters more than the pattern alone.
+
+## Trading Fair Value Gaps: A Practical Framework
+
+Spotting the gap is the easy part. Here's how to actually use it:
+
+**Entry:** Wait for price to retrace back into the FVG zone and show a reaction — a rejection wick, a shift in short-term momentum, or a lower-timeframe structure shift in the direction you expect. Don't buy or sell the instant price touches the gap; the retest needs to actually hold.
+
+**Stop loss:** Place your stop beyond the far edge of the gap (or beyond the swing point that preceded it), giving the trade enough room to be wrong about the exact edge of the zone without being wrong about the whole idea.
+
+**Target:** A reasonable first target is the most recent opposing swing high or low — the structural level the market needs to clear again for the move to keep extending.
+
+**Partial fills count.** An FVG doesn't need to be filled 100% before price reverses and continues. Many setups only tag 50–75% of the gap before reacting — treat the zone as an area of interest, not a single precise price.
+
+This is exactly the kind of structural zone PivotSnap is built to help with on your TradingView chart — instead of manually boxing every three-candle imbalance, the indicator highlights potential reversal and entry zones as they form, so you can spend your attention on confirmation instead of chart-marking.
+
+## Fair Value Gap vs. Breaker Block vs. Order Block
+
+These three concepts get lumped together constantly, and the overlap is real — but they're identified differently:
+
+- A **[fair value gap](/blog/fair-value-gap-trading)** is a price imbalance from a fast, one-sided move — no structure needs to break for one to exist.
+- An **order block** is the last opposing candle before a strong directional move — it marks where large orders were likely placed.
+- A **[breaker block](/blog/breaker-blocks-vs-order-blocks)** is what's left behind after an order block fails and price breaks through the structure it was defending.
+
+It's common for an FVG to sit inside or right next to a breaker block or order block — when that happens, the overlapping zones reinforce each other and tend to be treated as higher-confidence areas by traders who watch for confluence rather than any single pattern alone.
+
+## Do Fair Value Gaps Always Get Filled?
+
+No — and this is the most common misconception. Some gaps get filled within hours; others sit unfilled for weeks or never get revisited at all, particularly in a strong trend where the market simply doesn't pull back that far before continuing. Treating an FVG as a "guaranteed" target is a fast way to fight a trend that has no intention of retracing. The gap is a zone of interest, not a promise.
+
+## Common Mistakes Traders Make With FVGs
+
+- **Marking every tiny gap.** Not all three-candle imbalances are meaningful — a gap that formed during routine, low-volatility price action carries far less weight than one formed on a strong breakout or news-driven move.
+- **Trading the first touch without confirmation.** Price often needs to react at the gap, not just arrive there.
+- **Ignoring the higher-timeframe trend.** An FVG against a strong trend is a lower-probability trade than one aligned with it.
+- **Treating partial fills as failures.** A gap that gets 60% filled and then reverses isn't a failed setup — it behaved the way FVGs commonly do.
+
+## Frequently Asked Questions
+
+**Is a fair value gap the same as an imbalance?**
+Yes — "imbalance" and "fair value gap" are generally used interchangeably in smart money and ICT-style trading. Both refer to the same three-candle untraded price range.
+
+**What timeframes work best for fair value gaps?**
+FVGs form on every timeframe, but higher timeframes (4H, daily) tend to produce more reliable, less noisy zones. Lower timeframes generate far more gaps, most of which are minor and not worth trading in isolation.
+
+**Can a fair value gap be a support or resistance zone?**
+Yes. Once price fills into an FVG and reacts, that zone often continues to act as support (for a bullish gap) or resistance (for a bearish gap) on future retests, similar to how a broken structural level behaves.
+
+## Putting It Into Practice
+
+Fair value gaps are one of the more objective smart-money concepts to learn — the rules for identifying one are mechanical, even if the decision to trade it still requires context and confirmation. Used alongside other structural signals like [supply and demand zones](/blog/supply-demand-trading-zones) or [liquidity zones](/blog/tradingview-indicator-liquidity-zones-for-reversal-entries), FVGs become one more piece of confluence rather than a standalone system.
+
+If manually boxing every three-candle imbalance across multiple timeframes sounds like more screen time than you want to spend, PivotSnap flags potential reversal and entry/exit zones directly on your TradingView charts, so you can focus on confirming the setup instead of hunting for it.
+
+[Watch the demo →](/demo)

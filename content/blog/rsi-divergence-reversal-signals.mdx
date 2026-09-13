@@ -8,26 +8,77 @@ cta: "/demo"
 target_word_count: "2400"
 ---
 
-## Overview
+RSI divergence is one of the most talked-about reversal signals in technical analysis, and also one of the most misused. Most traders learn "price makes a new high, RSI doesn't, that's bearish" and stop there — missing that there are four distinct types of RSI divergence, and using the wrong one at the wrong time is a fast way to trade against a trend that has no intention of reversing.
 
-This scaffold targets **rsi divergence** as part of the **Divergence & Momentum** content silo.
+## What Is RSI Divergence?
 
-## Key TradingView Workflow
+RSI divergence happens when price and the Relative Strength Index disagree about momentum. Normally, price and RSI move together — new price highs come with new RSI highs, new price lows come with new RSI lows. When they stop agreeing, that disagreement is the divergence, and it's read as a sign that the momentum behind the current move is either weakening (suggesting a reversal) or masking a healthy pause (suggesting continuation) — which one depends on the type.
 
-Explain how the concept applies to reversal signals, entry timing, exit planning, and buy/sell alerts.
+## The Four Types of RSI Divergence
 
-## Examples to Add
+This is the part most guides skip past too quickly, and it's the difference between using divergence well and using it badly.
 
-- Replace this section with compressed chart screenshots or GIFs using `next/image`.
-- Add alt text that describes the chart naturally and includes the topic where helpful.
-- Include practical examples without promising trading outcomes.
+**Regular Bullish Divergence:** Price makes a lower low, but RSI makes a higher low. Downside momentum is fading even though price is still falling — this is the classic reversal signal, and it's the one most traders picture when they hear "bullish divergence."
 
-## Internal Links to Include
+**Regular Bearish Divergence:** Price makes a higher high, but RSI makes a lower high. Upside momentum is fading even though price is still climbing — the reversal counterpart to the above.
 
-Core links: /blog/multi-timeframe-analysis-trading; /blog/stochastic-momentum-index; /how-it-works | anchors: multi timeframe analysis; stochastic momentum index
+**Hidden Bullish Divergence:** Price makes a higher low, but RSI makes a lower low. This shows up during pullbacks in an uptrend and signals **continuation**, not reversal — momentum is "reloading" for another leg up.
 
-Silo links: /blog/smt-divergence-smart-money-confirmation-for-reversals (smt divergence); /blog/stochastic-momentum-index (stochastic momentum index)
+**Hidden Bearish Divergence:** Price makes a lower high, but RSI makes a higher high. This shows up during pullbacks in a downtrend and signals continuation lower.
 
-## CTA
+The rule that trips people up: **regular divergence signals a potential reversal; hidden divergence signals a potential continuation.** Trading a hidden bullish divergence as if it were a top-calling signal — or a regular bearish divergence as if the uptrend is guaranteed to keep going — is one of the most common ways this tool gets misapplied.
 
-Link readers to [/demo](/demo).
+## Where Each Type Actually Applies
+
+- **Trade regular divergence at trend extremes** — after an extended move, when you're specifically looking for signs the move is running out of steam.
+- **Trade hidden divergence during pullbacks within an established trend** — when you're looking for confirmation that a retracement is just a pause, not the start of a reversal.
+
+Using regular divergence in the middle of a strong trend (rather than at an extreme) tends to produce a lot of false signals, since momentum oscillators can diverge from price for extended stretches while a trend keeps grinding on.
+
+## How to Trade RSI Divergence for Reversal Entries
+
+1. **Identify the price structure first.** Are you at a potential trend extreme (candidate for regular divergence) or in a pullback within a trend (candidate for hidden divergence)?
+2. **Compare swing points on price and RSI.** Line up the two most recent relevant swing highs or lows on both price and the RSI line.
+3. **Confirm the divergence type** using the rules above — don't assume; check which price/RSI combination you're actually looking at.
+4. **Wait for a structural confirmation**, not just the divergence alone — a break of a minor trendline, a rejection candle, or a shift in short-term structure at the level where the divergence completed.
+5. **Enter on the confirmation, not the divergence itself.** Divergence can persist and extend before price actually turns — jumping in the moment you spot it, without waiting for price to confirm, is the single most common mistake with this signal.
+
+**Stop loss:** Beyond the price extreme where the divergence formed (the most recent high for bearish divergence, the most recent low for bullish).
+
+**Target:** The most recent opposing structural level, or a measured move based on the size of the prior swing.
+
+RSI divergence pairs naturally with the kind of structural reversal zones PivotSnap is built to highlight on your TradingView chart — where divergence tells you momentum is fading, a tool already flagging a potential reversal zone gives you the structural side of the confirmation, rather than relying on the oscillator in isolation.
+
+## RSI Divergence and Other Confirmation Tools
+
+RSI divergence is rarely used alone by traders who rely on it consistently. It pairs well with:
+
+- **[Stochastic momentum index](/blog/stochastic-momentum-index)** — a second momentum read using a different calculation; agreement between the two adds confidence.
+- **[Multi-timeframe analysis](/blog/multi-timeframe-analysis-trading)** — divergence on a higher timeframe carries more weight than the same signal on a 1-minute chart.
+- **Structural reversal zones** — a breaker block, fair value gap, or supply/demand zone lining up with an RSI divergence is generally treated as a stronger setup than divergence alone.
+
+## Common Mistakes With RSI Divergence
+
+- **Confusing regular and hidden divergence.** Trading a continuation signal as if it were a reversal signal (or vice versa) puts you on the wrong side of the trade.
+- **Entering the instant divergence appears.** Divergence can keep extending for several more swings before price actually reverses — wait for structural confirmation.
+- **Ignoring the broader trend.** RSI divergence against an extremely strong trend can persist for a long time without ever producing the reversal it seems to be signaling.
+- **Using divergence on illiquid or extremely choppy instruments**, where RSI swings are noisy enough to produce divergence patterns that don't mean much.
+
+## Frequently Asked Questions
+
+**Is RSI divergence a reliable reversal signal on its own?**
+On its own, no signal is fully reliable — RSI divergence works best as one piece of confirmation alongside structural context (a key level, a break of trendline, or another momentum tool), not as a standalone trading system.
+
+**What's the difference between regular and hidden RSI divergence?**
+Regular divergence signals a potential reversal and typically appears at trend extremes. Hidden divergence signals a potential continuation and typically appears during pullbacks within an established trend. Mixing up which one you're looking at is the most common error traders make with this signal.
+
+**Does RSI divergence work on all timeframes?**
+Yes, the concept applies across timeframes, but higher timeframes tend to produce more reliable, less noisy divergence signals than very short intraday charts.
+
+## Putting It Into Practice
+
+RSI divergence is a genuinely useful early warning that momentum is shifting, but only when you're using the right type for the market context and waiting for price to actually confirm the shift. Treated as a standalone "buy here, sell here" signal, it produces plenty of false starts; treated as one input into a broader confirmation process, it earns its reputation.
+
+If you want the structural side of that confirmation handled automatically, PivotSnap highlights potential reversal and entry/exit zones directly on your TradingView charts — a natural complement to watching RSI for the momentum side of the picture.
+
+[Watch the demo →](/demo)

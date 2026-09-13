@@ -8,26 +8,69 @@ cta: "/demo"
 target_word_count: "2400"
 ---
 
-## Overview
+An indicator that won't show up on your chart is almost always one of a small handful of causes — and most are quick to fix once you know where to look. This is a practical troubleshooting walkthrough, in the order worth checking, before assuming something is broken.
 
-This pillar scaffold targets **tradingview indicator not showing** from `site_architecture.csv`.
+## 1. Check Whether You're Logged Into the Right TradingView Account
 
-## Key Questions to Answer
+This is the single most common cause, especially for purchased or invite-only indicators. TradingView access is tied to your specific account — if you have multiple accounts (a personal one and a work one, for example), being logged into the wrong one will make a purchased indicator appear completely missing, even though your access is active on the correct account. Log out and confirm you're signed into the exact account used at checkout.
 
-- How does this topic help traders evaluate reversal, entry, and exit signals?
-- Which TradingView workflows does it support?
-- What limitations and risk-management considerations should readers understand?
+## 2. Confirm You've Actually Been Granted Invite-Only Access
 
-## Secondary Keywords
+Invite-only scripts on TradingView are locked behind a permission system controlled by the script's author — you can often find and view the script's listing page, but it won't run on your chart until the author has explicitly added your username to the access list. After a purchase, this grant isn't always instant. Check your confirmation email or delivery instructions for the expected timeline, and confirm the username you provided at checkout matches your actual TradingView username exactly (not your display name, which can differ).
 
-how to fix tradingview indicator errors; tradingview indicator problem; tradingview indicator template
+## 3. Check Chart Type Compatibility
 
-## Internal Links to Include
+Some indicators are built for standard candlestick or bar charts and behave unexpectedly — or don't render at all — on non-standard chart types like Renko, Heikin Ashi, or Point & Figure, since these chart types transform the underlying price data before the indicator ever sees it. If your indicator isn't showing, try switching back to a standard candlestick chart to rule this out.
 
-Core links: /tradingview-script; /faq; /demo
+## 4. Confirm the Indicator Is Actually Added to the Chart
 
-Anchor text: TradingView setup instructions; indicator FAQ; get access to the script
+It sounds obvious, but it's easy to add an indicator to one chart layout and then switch to a different saved layout that doesn't include it. Check the list of indicators currently active on your chart (usually visible at the top-left of the chart, or under the indicator legend) to confirm it's actually applied to the layout you're viewing.
 
-## CTA
+## 5. Check Visibility Settings and Timeframe Restrictions
 
-Link readers to [/demo](/demo) and relevant product pages where natural.
+Some indicators are intentionally built to only display on specific timeframes, or have visibility toggles that can be switched off in the settings without you noticing (especially after an update). Open the indicator's settings (the gear icon) and confirm all visibility toggles are enabled, and check the documentation for any stated timeframe restrictions.
+
+## 6. Refresh, Clear Cache, or Try a Different Browser
+
+Browser-level issues — a stale cache, a conflicting extension, or a temporary TradingView session glitch — can occasionally prevent an indicator from rendering even when access and settings are correct. A hard refresh, or testing in an incognito window or different browser, quickly rules this out.
+
+## 7. Check for Script Errors or Deprecated Pine Script Versions
+
+If you're using a custom or older script, check for an error message where the indicator would normally load — Pine Script updates occasionally deprecate older syntax, which can cause a previously working script to stop rendering until it's updated by the author.
+
+## A Quick Diagnostic Checklist
+
+1. Am I logged into the correct TradingView account?
+2. Has invite-only access actually been granted, and does my username match exactly?
+3. Am I using a standard chart type?
+4. Is the indicator actually added to this specific chart layout?
+5. Are all visibility settings toggled on?
+6. Have I tried a refresh or a different browser?
+7. Is there a visible error message pointing to a script issue?
+
+Working through this list in order resolves the overwhelming majority of "indicator not showing" issues without needing to contact support.
+
+## When to Contact Support
+
+If you've worked through the checklist above and the indicator still isn't appearing, that's the point to reach out — either to TradingView support (for platform-level issues) or the indicator's provider (for access or licensing issues), with specifics about which steps you've already tried. This saves a round-trip of basic troubleshooting questions and gets you to an actual fix faster.
+
+## Getting Set Up With PivotSnap
+
+For PivotSnap specifically, access details and setup instructions are delivered by email after purchase — see our [TradingView script setup page](/tradingview-script) for the full walkthrough, or check the [FAQ](/faq) for answers to common setup questions. If you've followed the checklist above and still don't see the indicator, our setup email includes the details you'll need to confirm access.
+
+## Frequently Asked Questions
+
+**Why does my indicator show on one device but not another?**
+This is almost always an account issue — check that you're logged into the same TradingView account on both devices, since indicator access doesn't transfer automatically between separate accounts.
+
+**Can a VPN or region setting affect indicator visibility?**
+This isn't a common cause, but in rare cases, regional restrictions on certain data feeds can affect what's visible. Ruling out the more common causes (account, access grant, chart type) first is the more efficient troubleshooting order.
+
+**How long does it usually take to get invite-only access after purchasing?**
+This varies by provider — check the specific delivery timeline stated at checkout or in your confirmation email, since it's set by the seller, not by TradingView itself.
+
+## Putting It Into Practice
+
+Most "indicator not showing" problems come down to one of a few predictable causes — account mismatch, access not yet granted, or a chart-type incompatibility — rather than anything actually broken. Working through the checklist above in order will resolve the majority of cases quickly.
+
+If you're setting up PivotSnap specifically, [watch the demo](/demo) to see what correct setup looks like, or check the [FAQ](/faq) for answers to the most common setup questions.

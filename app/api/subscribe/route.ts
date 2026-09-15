@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { saveSignup } from '@/lib/db'
 
 const schema = z.object({
   email: z.string().email(),
@@ -14,6 +15,12 @@ export async function POST(request: Request) {
 
   const parsed = schema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: 'Valid email is required' }, { status: 400 })
+
+  if (process.env.POSTGRES_URL) {
+    await saveSignup(parsed.data.email, parsed.data.source)
+  } else {
+    console.warn('POSTGRES_URL is not set — skipping signup storage for', parsed.data.email)
+  }
 
   const webhook = process.env.EMAIL_CAPTURE_WEBHOOK_URL
   if (webhook) {
